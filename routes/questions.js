@@ -4,6 +4,7 @@ var mongodb = require("mongodb").MongoClient;
 var objectId = require("mongodb").ObjectID;
 var bodyParser = require("body-parser");
 var uuidv5 = require("uuid").v5;
+var { mongoDbUrl, questionsCollection, databaseName } = require("../config");
 
 const uri = `mongodb://localhost:27017/`;
 const dbName = "jindarshan";
@@ -11,44 +12,18 @@ const fullName = uri + dbName;
 const url1 =
   "mongodb://dbuser:password%40123@cluster0-shard-00-00-qqpkg.mongodb.net:27017,cluster0-shard-00-01-qqpkg.mongodb.net:27017,cluster0-shard-00-02-qqpkg.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true&w=majority";
 
-questionsRouter.route("/").get(function(req, res) {
-  const url2 = url1 + dbName;
-  //const client = new MongoClient(uri, { useNewUrlParser: true });
-  mongodb.connect(url1, function(err, db) {
-    if (err) {
-      console.log(err);
-      return;
-    }
-    var collection = db.collection("questions");
-    var query = req.query;
-    if (query) {
-      collection.find(query).toArray(function(err, results) {
-        console.log(results);
-        let resp = results;
-        res.json(resp);
-        db.close();
-      });
-    } else {
-      collection.find({}).toArray(function(err, results) {
-        console.log(results);
-        let resp = results;
-        res.json(resp);
-        db.close();
-      });
-    }
-  });
-});
+const connectionString = mongoDbUrl + databaseName;
 
 questionsRouter
   .route("/")
   .get(function(req, res) {
     //const client = new MongoClient(uri, { useNewUrlParser: true });
-    mongodb.connect(fullName, function(err, db) {
+    mongodb.connect(connectionString, function(err, db) {
       if (err) {
         console.log(err);
         return;
       }
-      var collection = db.collection("questions");
+      var collection = db.collection(questionsCollection);
       var query = req.query;
       if (query) {
         collection.find(query).toArray(function(err, results) {
@@ -68,7 +43,7 @@ questionsRouter
     });
   })
   .post(function(req, res) {
-    mongodb.connect(fullName, function(err, db) {
+    mongodb.connect(connectionString, function(err, db) {
       if (err) {
         console.log(err);
         return;
@@ -79,7 +54,7 @@ questionsRouter
         Object.assign(question, { _id: id });
       });
       console.log(questions);
-      var collection = db.collection("questions");
+      var collection = db.collection(questionsCollection);
       collection.insert(questions, function(err, results) {
         console.log(results.insertedIds);
         // res.send(results.insertedIds);
@@ -93,12 +68,12 @@ questionsRouter
   .route("/:id")
   .get(function(req, res) {
     var Id = new objectId(req.params.id);
-    mongodb.connect(fullName, function(err, db) {
+    mongodb.connect(connectionString, function(err, db) {
       if (err) {
         console.log(err);
         return;
       }
-      var collection = db.collection("questions");
+      var collection = db.collection(questionsCollection);
       collection.findOne({ _id: Id }, function(err, results) {
         res.json(results);
         db.close();
@@ -107,12 +82,12 @@ questionsRouter
   })
   //put method to edit
   .put(function(req, res) {
-    mongodb.connect(fullName, function(err, db) {
+    mongodb.connect(connectionString, function(err, db) {
       if (err) {
         console.log(err);
         return;
       }
-      var collection = db.collection("questions");
+      var collection = db.collection(questionsCollection);
       var fort = req.body;
 
       collection.update({ _id: Id }, { $set: fort }, function(err, result) {
@@ -127,12 +102,12 @@ questionsRouter
   //delete method
   .delete(function(req, res) {
     var Id = new objectId(req.params.id);
-    mongodb.connect(fullName, function(err, db) {
+    mongodb.connect(connectionString, function(err, db) {
       if (err) {
         console.log(err);
         return;
       }
-      var collection = db.collection("questions");
+      var collection = db.collection(questionsCollection);
 
       collection.deleteOne({ _id: Id }, function(err, results) {
         res.send("removed");
