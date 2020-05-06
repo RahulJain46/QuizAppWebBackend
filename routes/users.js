@@ -4,21 +4,24 @@ var mongodb = require("mongodb").MongoClient;
 var objectId = require("mongodb").ObjectID;
 var bodyParser = require("body-parser");
 var uuidv5 = require("uuid").v5;
+var { mongoDbUrl, usersCollections, databaseName } = require("../config");
 
 /* GET users listing. */
 const uri = `mongodb://localhost:27017/`;
 const dbName = "jindarshan";
 const fullName = uri + dbName;
 
+const connectionString = mongoDbUrl + databaseName;
+
 userRouter
   .route("/")
   .get(function(req, res, next) {
-    mongodb.connect(fullName, function(err, db) {
+    mongodb.connect(connectionString, function(err, db) {
       if (err) {
         console.log(err);
         return;
       }
-      var collection = db.collection("users");
+      var collection = db.collection(usersCollections);
       var query = req.query;
       if (query) {
         collection.find(query).toArray(function(err, results) {
@@ -36,13 +39,15 @@ userRouter
     });
   })
   .post(function(req, res) {
-    mongodb.connect(fullName, function(err, db) {
+    mongodb.connect(connectionString, function(err, db) {
       if (err) {
         console.log(err);
         return;
       }
       var user = req.body;
-      var collection = db.collection("users");
+      var collection = db.collection(usersCollections);
+      let id = uuidv5(user.fullname + user.mobile, uuidv5.DNS);
+      Object.assign(user, { userId: id });
       collection.insert(user, function(err, results) {
         console.log(results.insertedIds);
         res.send("update is successful " + results.insertedIds);
