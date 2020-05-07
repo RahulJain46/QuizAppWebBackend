@@ -25,7 +25,20 @@ questionsRouter
       }
       var collection = db.collection(questionsCollection);
       var query = req.query;
-      if (query) {
+      if (
+        !(Object.keys(query).length === 0 && query.constructor === Object) &&
+        query.date[1] === "all"
+      ) {
+        collection.find({}, { date: 1 }).toArray(function(err, results) {
+          console.log(results);
+          let resp = results;
+          res.json(resp);
+          db.close();
+        });
+      } else if (
+        query &&
+        !(Object.keys(query).length === 0 && query.constructor === Object)
+      ) {
         collection.find(query).toArray(function(err, results) {
           console.log(results);
           let resp = results;
