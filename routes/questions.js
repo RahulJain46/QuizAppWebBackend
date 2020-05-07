@@ -27,6 +27,7 @@ questionsRouter
       var query = req.query;
       if (
         !(Object.keys(query).length === 0 && query.constructor === Object) &&
+        query.date != undefined &&
         query.date[1] === "all"
       ) {
         collection.find({}, { date: 1 }).toArray(function(err, results) {
@@ -35,6 +36,41 @@ questionsRouter
           res.json(resp);
           db.close();
         });
+      } else if (
+        !(Object.keys(query).length === 0 && query.constructor === Object) &&
+        query.allresult === "true"
+      ) {
+        db.collection("usersresponse")
+          .aggregate([
+            {
+              $lookup: {
+                from: "users",
+                let: { userId: "usersAnswer.userId" },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $eq: ["$userId", "$$userId"]
+                      }
+                    }
+                  },
+                  {
+                    $project: {
+                      // "usersAnswer.answers": 1,
+                      // "usersAnswer.comment": 1
+                    }
+                  }
+                ],
+
+                as: "test"
+              }
+            }
+          ])
+          .toArray(function(err, results) {
+            if (err) throw err;
+            res.json(results);
+            db.close();
+          });
       } else if (
         query &&
         !(Object.keys(query).length === 0 && query.constructor === Object)
