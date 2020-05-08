@@ -20,7 +20,78 @@ userReponseRouter
       }
       var collection = db.collection(userResponseCollection);
       var query = req.query;
-      if (query) {
+      if (
+        !(Object.keys(query).length === 0 && query.constructor === Object) && query.allresult != undefined &&
+        query.allresult === "true"
+      ) {
+        
+        db.collection("users")
+          .aggregate([
+            {
+              $lookup:{
+        
+             from: "usersresponse",
+        
+            let: { user_Id: "$userId" },
+        
+            pipeline: [
+        
+              {
+        
+                $match: {
+                  $expr: {
+                      $and:
+                          [
+                      {$in: ["$$user_Id","$usersAnswer.userId"]},
+                      {$eq: ["$date",query.date]}
+                          ]
+                  }
+                }
+        
+              },
+        
+              {
+        
+                $project: {
+                  "usersAnswer.userId": 1,
+                  "usersAnswer.score": 1,
+                  "usersAnswer.time": 1,
+                  date: 1
+        
+                }
+        
+              }
+        
+            ],
+            as: "userInfo"
+        
+            }
+        
+                }
+          ])
+          .toArray(function(err, results) {
+            if (err) throw err;
+            let ObjArray =[]
+            results.map((result)=>{
+              let id = result.userId;
+              let obj ={}
+              if(result.userInfo.length!=0){
+                result.userInfo[0].usersAnswer.map((useranswer)=>{
+                  if(useranswer.userId === id){
+                    obj["time"] = useranswer.time;
+                    obj["score"] = useranswer.score;
+                  }
+                })
+                obj["fullname"]=result.fullname;
+                obj["city"]=result.city;
+                ObjArray.push(obj)
+              }
+            })
+            res.json(ObjArray);
+            db.close();
+          });
+      }
+      else if (!(Object.keys(query).length === 0 && query.constructor === Object) && query) {
         collection.find(query).toArray(function(err, results) {
           let resp = results;
           res.json(resp);
