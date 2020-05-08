@@ -23,7 +23,18 @@ userRouter
       }
       var collection = db.collection(usersCollections);
       var query = req.query;
-      if (query) {
+      if(
+        !(Object.keys(query).length === 0 && query.constructor === Object) &&
+        query.userId != undefined
+      ){
+        collection.find( {"userId": query.userId}).count( {}, function(err, results) {
+          console.log(results);
+          let resp = results;
+          res.json(resp);
+          db.close();
+
+      });
+    }else if ( !(Object.keys(query).length === 0 && query.constructor === Object) && query) {
         collection.find(query).toArray(function(err, results) {
           let resp = results;
           res.json(resp);
