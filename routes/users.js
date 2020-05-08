@@ -57,8 +57,8 @@ userRouter
       }
       var user = req.body;
       var collection = db.collection(usersCollections);
-      let id = uuidv5(user.fullname + user.mobile, uuidv5.DNS);
-      Object.assign(user, { userId: id });
+      // let id = uuidv5(user.fullname + user.mobile, uuidv5.DNS);
+      // Object.assign(user, { userId: id });
       collection.insert(user, function(err, results) {
         console.log(results.insertedIds);
         res.send("update is successful " + results.insertedIds);
