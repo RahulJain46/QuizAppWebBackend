@@ -152,7 +152,7 @@ userReponseRouter
         collection.update( {date: query.date}, { $push: {usersAnswer:usersResponse}  } 
         , function(err, results) {
          console.log(results);
-         res.send("update is successful " + results.insertedIds);
+         res.send("update is successful " + results.result.ok);
          db.close();
        });
 
