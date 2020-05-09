@@ -135,7 +135,31 @@ userReponseRouter
         db.close();
       });
     });
-  });
+  }).patch(function(req,res){
+    mongodb.connect(connectionString, function(err, db) {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      var usersResponse = req.body;
+     
+      var collection = db.collection(userResponseCollection);
+      
+      let query = req.query
+      if( !(Object.keys(query).length === 0 && query.constructor === Object) 
+         && query.date != null  && query.date != undefined 
+      && query.update === "true" && query.update != undefined ){
+        collection.update( {date: query.date}, { $push: {usersAnswer:usersResponse}  } 
+        , function(err, results) {
+         console.log(results);
+         res.send("update is successful " + results.insertedIds);
+         db.close();
+       });
+
+      }
+
+    });
+  })
 
 userReponseRouter
   .route("/:id")
