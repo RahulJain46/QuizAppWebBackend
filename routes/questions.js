@@ -106,9 +106,15 @@ questionsRouter
       var collection = db.collection(questionsCollection);
       collection.insert(questions, function(err, results) {
         console.log(results.insertedIds);
-        // res.send(results.insertedIds);
-        res.send("update is successful " + results.insertedIds);
-        db.close();
+        const userResponse = {
+          date: questions.date,
+        usersAnswer:[]
+        }
+        db.collection("usersresponse").insert(userResponse,function(err,results){
+          console.log(results.insertedIds)
+          res.send("update is successful " + results.insertedIds);
+          db.close();
+        })
       });
     });
   });
