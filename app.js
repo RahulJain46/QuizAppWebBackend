@@ -40,14 +40,22 @@ app.all("/", function(req, res, next) {
     "Access-Control-Allow-Origin",
     "https://newfrontendweb.herokuapp.com/"
   );
+  res.header("Content-Type", "application/json");
   res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "X-Requested-With,Content-Type");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "origin,Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With"
+  );
+  req.header("Content-Type", "application/json");
   req.header(
     "Access-Control-Allow-Origin",
     "https://newfrontendweb.herokuapp.com/"
   );
   req.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
-  req.header("Access-Control-Allow-Headers", "X-Requested-With,Content-Type");
+  req.header(
+    "Access-Control-Allow-Headers",
+    "origin,Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With"
+  );
   next();
 });
 
