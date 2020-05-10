@@ -44,7 +44,7 @@ app.all("/", function(req, res, next) {
   res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
   res.header(
     "Access-Control-Allow-Headers",
-    "origin,Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With"
+    "Accept,Origin,Content-Type,X-LS-CORS-Template,X-LS-Auth-Token,X-LS-Auth-User-Token,Content-Type,X-LS-Sync-Result,X-LS-Sequence,token"
   );
   req.header("Content-Type", "application/json");
   req.header(
@@ -54,7 +54,7 @@ app.all("/", function(req, res, next) {
   req.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
   req.header(
     "Access-Control-Allow-Headers",
-    "origin,Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With"
+    "Accept,Origin,Content-Type,X-LS-CORS-Template,X-LS-Auth-Token,X-LS-Auth-User-Token,Content-Type,X-LS-Sync-Result,X-LS-Sequence,token"
   );
   next();
 });
