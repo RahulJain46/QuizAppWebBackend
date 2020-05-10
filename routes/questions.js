@@ -18,6 +18,15 @@ questionsRouter
   .route("/")
   .get(function(req, res) {
     //const client = new MongoClient(uri, { useNewUrlParser: true });
+    res.header(
+      "Access-Control-Allow-Origin",
+      "https://newfrontendweb.herokuapp.com/"
+    );
+    res.header(
+      "Access-Control-Allow-Methods",
+      "PUT, GET, POST, DELETE, OPTIONS"
+    );
+    res.header("Access-Control-Allow-Headers", "X-Requested-With,Content-Type");
     mongodb.connect(connectionString, function(err, db) {
       if (err) {
         console.log(err);
@@ -108,13 +117,16 @@ questionsRouter
         console.log(results.insertedIds);
         const userResponse = {
           date: questions.date,
-        usersAnswer:[]
-        }
-        db.collection("usersresponse").insert(userResponse,function(err,results){
-          console.log(results.insertedIds)
+          usersAnswer: []
+        };
+        db.collection("usersresponse").insert(userResponse, function(
+          err,
+          results
+        ) {
+          console.log(results.insertedIds);
           res.send("update is successful " + results.insertedIds);
           db.close();
-        })
+        });
       });
     });
   });
