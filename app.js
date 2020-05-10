@@ -20,23 +20,30 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-// var whitelist = [
-//   "https://newfrontendweb.herokuapp.com/",
-//   "http://localhost:3000/"
-// ];
-// var corsOptions = {
-//   origin: function(origin, callback) {
-//     if (whitelist.indexOf(origin) !== -1) {
-//       callback(null, true);
-//     } else {
-//       callback(new Error("Not allowed by CORS"));
-//     }
-//   }
-// };
+var whitelist = ["https://newfrontendweb.herokuapp.com/"];
+var corsOptions = {
+  origin: function(origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  }
+};
 
 app.use(cors());
 
 app.use(express.static(path.join(__dirname, "public")));
+
+app.all("/", function(req, res, next) {
+  res.header(
+    "Access-Control-Allow-Origin",
+    "https://newfrontendweb.herokuapp.com/"
+  );
+  res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With,Content-Type");
+  next();
+});
 
 app.use("/", index);
 app.use("/users", users);
@@ -46,7 +53,7 @@ app.use("/usersresponse", usersResponse);
 app.use(function(req, res, next) {
   res.header(
     "Access-Control-Allow-Origin",
-    "https://newfrontendweb.herokuapp.com"
+    "https://newfrontendweb.herokuapp.com/"
   );
   res.header(
     "Access-Control-Allow-Headers",
