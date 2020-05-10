@@ -31,7 +31,7 @@ var corsOptions = {
   }
 };
 
-app.use(cors());
+app.use(cors(corsOptions));
 
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -42,6 +42,12 @@ app.all("/", function(req, res, next) {
   );
   res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
   res.header("Access-Control-Allow-Headers", "X-Requested-With,Content-Type");
+  req.header(
+    "Access-Control-Allow-Origin",
+    "https://newfrontendweb.herokuapp.com/"
+  );
+  req.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
+  req.header("Access-Control-Allow-Headers", "X-Requested-With,Content-Type");
   next();
 });
 
