@@ -44,11 +44,15 @@ app.use("/questions", questions);
 app.use("/usersresponse", usersResponse);
 
 app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Origin",
+    "https://newfrontendweb.herokuapp.com"
+  );
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"
   );
+  res.header("Access-Control-Allow-Methods", "POST, PUT, OPTIONS, DELETE, GET");
   next();
 });
 
