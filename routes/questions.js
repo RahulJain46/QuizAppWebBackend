@@ -26,9 +26,7 @@ questionsRouter
       "Access-Control-Allow-Methods",
       "PUT, GET, POST, DELETE, OPTIONS"
     );
-    res.header(
-      "Accept,Origin,Content-Type,X-LS-CORS-Template,X-LS-Auth-Token,X-LS-Auth-User-Token,Content-Type,X-LS-Sync-Result,X-LS-Sequence,token"
-    );
+    res.header("Accept,Origin,Content-Type");
     res.header("Content-Type", "application/json");
     mongodb.connect(connectionString, function(err, db) {
       if (err) {

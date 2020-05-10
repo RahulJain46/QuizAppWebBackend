@@ -42,20 +42,14 @@ app.all("/", function(req, res, next) {
   );
   res.header("Content-Type", "application/json");
   res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Accept,Origin,Content-Type,X-LS-CORS-Template,X-LS-Auth-Token,X-LS-Auth-User-Token,Content-Type,X-LS-Sync-Result,X-LS-Sequence,token"
-  );
+  res.header("Access-Control-Allow-Headers", "Accept,Origin,Content-Type");
   req.header("Content-Type", "application/json");
   req.header(
     "Access-Control-Allow-Origin",
     "https://newfrontendweb.herokuapp.com/"
   );
   req.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
-  req.header(
-    "Access-Control-Allow-Headers",
-    "Accept,Origin,Content-Type,X-LS-CORS-Template,X-LS-Auth-Token,X-LS-Auth-User-Token,Content-Type,X-LS-Sync-Result,X-LS-Sequence,token"
-  );
+  req.header("Access-Control-Allow-Headers", "Accept,Origin,Content-Type");
   next();
 });
 
@@ -69,10 +63,7 @@ app.use(function(req, res, next) {
     "Access-Control-Allow-Origin",
     "https://newfrontendweb.herokuapp.com/"
   );
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
+  res.header("Access-Control-Allow-Headers", "Accept,Origin,Content-Type");
   res.header("Access-Control-Allow-Methods", "POST, PUT, OPTIONS, DELETE, GET");
   next();
 });
