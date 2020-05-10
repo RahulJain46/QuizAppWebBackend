@@ -36,18 +36,12 @@ var corsOptions = {
 app.use(express.static(path.join(__dirname, "public")));
 
 app.all("/", function(req, res, next) {
-  res.header(
-    "Access-Control-Allow-Origin",
-    "https://newfrontendweb.herokuapp.com/"
-  );
+  res.header("Access-Control-Allow-Origin", "*");
   res.header("Content-Type", "application/json");
   res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Accept,Origin,Content-Type");
   req.header("Content-Type", "application/json");
-  req.header(
-    "Access-Control-Allow-Origin",
-    "https://newfrontendweb.herokuapp.com/"
-  );
+  req.header("Access-Control-Allow-Origin", "*");
   req.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
   req.header("Access-Control-Allow-Headers", "Accept,Origin,Content-Type");
   next();
@@ -59,10 +53,7 @@ app.use("/questions", questions);
 app.use("/usersresponse", usersResponse);
 
 app.use(function(req, res, next) {
-  res.header(
-    "Access-Control-Allow-Origin",
-    "https://newfrontendweb.herokuapp.com/"
-  );
+  res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Accept,Origin,Content-Type");
   res.header("Access-Control-Allow-Methods", "POST, PUT, OPTIONS, DELETE, GET");
   next();

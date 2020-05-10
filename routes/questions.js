@@ -18,10 +18,7 @@ questionsRouter
   .route("/")
   .get(function(req, res) {
     //const client = new MongoClient(uri, { useNewUrlParser: true });
-    res.header(
-      "Access-Control-Allow-Origin",
-      "https://newfrontendweb.herokuapp.com/"
-    );
+    res.header("Access-Control-Allow-Origin", "*");
     res.header(
       "Access-Control-Allow-Methods",
       "PUT, GET, POST, DELETE, OPTIONS"
