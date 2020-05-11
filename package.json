@@ -1,5 +1,5 @@
 {
-  "name": "shivneri-api",
+  "name": "jindarshan-api",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -8,6 +8,7 @@
   "dependencies": {
     "body-parser": "~1.18.2",
     "cookie-parser": "~1.4.3",
+    "cors": "^2.8.5",
     "debug": "~2.6.9",
     "express": "~4.15.5",
     "express-session": "^1.15.6",
@@ -17,7 +18,6 @@
     "passport": "^0.4.0",
     "passport-google-oauth": "^1.0.0",
     "passport-local": "^1.0.0",
-    "cors": "^2.8.4",
     "uuid": "^7.0.3"
   }
 }

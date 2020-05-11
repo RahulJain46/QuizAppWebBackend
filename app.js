@@ -19,14 +19,30 @@ app.use(logger("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-
-app.use(cors());
+var corsOptions = {
+  origin: "http://localhost:3000",
+  methods: ["GET", "PUT", "POST", "PATCH"],
+  allowedHeaders: "*",
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+};
+app.options("*", cors());
+app.use(cors(corsOptions));
 
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/", index);
+app.all("/", function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header("Content-Type", "application/json");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "origin,x-requested-with,Content-Type"
+  );
+  next();
+});
+
+app.use("/", cors(corsOptions), index);
 app.use("/users", users);
-app.use("/questions", questions);
+app.use("/questions", cors(corsOptions), questions);
 app.use("/usersresponse", usersResponse);
 
 // catch 404 and forward to error handler
