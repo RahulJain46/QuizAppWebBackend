@@ -1,7 +1,7 @@
 const constants = {
   mongoDbUrl:
-    "mongodb://dbuser:password%40123@cluster0-shard-00-00-qqpkg.mongodb.net:27017,cluster0-shard-00-01-qqpkg.mongodb.net:27017,cluster0-shard-00-02-qqpkg.mongodb.net:27017/jindarshandev?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true/",
-  databaseName: "jindarshandev",
+    "mongodb://dbuser:password%40123@cluster0-shard-00-00-qqpkg.mongodb.net:27017,cluster0-shard-00-01-qqpkg.mongodb.net:27017,cluster0-shard-00-02-qqpkg.mongodb.net:27017/jindarshan?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true/",
+  databaseName: "jindarshan",
   questionsCollection: "questions",
   usersCollections: "users",
   commentsCollections: "comments",
