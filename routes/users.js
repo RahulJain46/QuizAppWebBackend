@@ -55,10 +55,12 @@ userRouter
         console.log(err);
         return;
       }
+      const ip= req.connection.remoteAddress ;
       var user = req.body;
+      var date= new Date().toLocaleString();
       var collection = db.collection(usersCollections);
       let id = uuidv5(user.fullname + user.mobile, uuidv5.DNS);
-      Object.assign(user, { userId: id });
+      Object.assign(user, { userId: id, ip, date });
       collection.insert(user, function(err, results) {
         console.log(results.insertedIds);
         res.send("update is successful " + results.insertedIds);
