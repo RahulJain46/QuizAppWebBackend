@@ -55,23 +55,19 @@ userRouter
         console.log(err);
         return;
       }
-      const ip= req.connection.remoteAddress ;
-      var newip = req.header('x-forwarded-for') || req.connection.remoteAddress;
+      
+      var ip = req.header('x-forwarded-for') || req.connection.remoteAddress;
       var user = req.body;
-      var date= new Date().toLocaleString();
+
       var currentTime = new Date();
-
       var currentOffset = currentTime.getTimezoneOffset();
-
       var ISTOffset = 330;   // IST offset UTC +5:30 
-
       var ISTTime = new Date(currentTime.getTime() + (ISTOffset + currentOffset)*60000);
       var date= ISTTime.toString().substring(4,24);
 
-
       var collection = db.collection(usersCollections);
       let id = uuidv5(user.fullname + user.mobile, uuidv5.DNS);
-      Object.assign(user, { userId: id, newip, date });
+      Object.assign(user, { userId: id, ip, date });
       collection.insert(user, function(err, results) {
         console.log(results.insertedIds);
         res.send("update is successful " + results.insertedIds);
