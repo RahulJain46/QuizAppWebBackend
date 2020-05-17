@@ -82,6 +82,8 @@ userReponseRouter
                   if(useranswer.userId === id){
                     obj["time"] = useranswer.time;
                     obj["score"] = useranswer.score;
+                    obj["feedback"] = useranswer.feedback;
+                    obj["suggestion"] = useranswer.suggestion;
                   }
                 })
                 obj["fullname"]=result.fullname;
