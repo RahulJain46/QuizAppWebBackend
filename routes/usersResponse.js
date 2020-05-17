@@ -56,6 +56,8 @@ userReponseRouter
                   "usersAnswer.userId": 1,
                   "usersAnswer.score": 1,
                   "usersAnswer.time": 1,
+                  "usersAnswer.feedback": 1,
+                  "usersAnswer.suggestion": 1,
                   date: 1
         
                 }
