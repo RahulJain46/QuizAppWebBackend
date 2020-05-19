@@ -54,12 +54,35 @@ userRouter
                        }
                      }
                    ],
-                   as: "userdate"
+                   as: "userInfo"
                  }
                }
              ]).toArray(function (err, resultsDate) {
-               let resp = resultsDate;
-               res.json(resp);
+              if (err) throw err;
+              let ObjArray = [];
+              
+              // resultsDate.map((result) =>{
+              //   let id= result.userId;
+              //   let obj = {};
+              //   if(result.userInfo.length != 0){
+              //       result.userInfo.map((userinfo) => {
+
+              //         result.userinfo.usersAnswer.map((useranswer) => {
+              //             if(useranswer.userId === id)
+              //               obj["userid"] = useranswer.userId;
+              //           })
+              //           obj["date"]=userinfo.date;
+                      
+              //       })
+              //       obj["fullname"]=result.fullName;
+                    
+              //       ObjArray.push(obj)
+              //   }
+              // })
+              
+
+               
+               res.json(ObjArray);
                db.close();
              });
          }
