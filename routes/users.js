@@ -82,7 +82,7 @@ userRouter
               
 
                
-               res.json(ObjArray);
+               res.json(resultsDate);
                db.close();
              });
          }
