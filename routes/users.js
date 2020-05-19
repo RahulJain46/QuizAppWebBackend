@@ -23,7 +23,60 @@ userRouter
       }
       var collection = db.collection(usersCollections);
       var query = req.query;
-      if (
+
+      if (!(Object.keys(query).length === 0 && query.constructor === Object) && query.login === "true" &&
+      query.login != undefined && query.userId != undefined
+      ) {
+       collection.find({ "userId": query.userId }).count({},function (err, usersResults) {
+
+         if (usersResults == 1) {
+           db.collection("users").
+             aggregate([
+               {
+                 $lookup: {
+                   from: "usersresponse",
+                   pipeline: [
+                     {
+                       $match: {
+                         $expr: {
+                           $and: [
+                             { $in: [ query.userId, "$usersAnswer.userId"] },
+
+                           ]
+                         }
+                       }
+                     },
+
+                     {
+                       $project: {
+                         date: 1,
+                         "usersAnswer.userId": 1
+                       }
+                     }
+                   ],
+                   as: "userdate"
+                 }
+               }
+             ]).toArray(function (err, resultsDate) {
+               let resp = resultsDate;
+               res.json(resp);
+               db.close();
+             });
+         }
+         else {
+           let obj = {};
+           obj["loginResponse"] = false;
+           res.json(obj);
+           db.close();
+         }
+
+       });
+     }
+
+
+
+      //to check if the user exist or not
+      else if (
         !(Object.keys(query).length === 0 && query.constructor === Object) &&
         query.userId != undefined
       ) {
