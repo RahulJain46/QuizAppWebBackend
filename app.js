@@ -12,8 +12,8 @@ var usersResponse = require("./routes/usersResponse");
 var questions = require("./routes/questions");
 var comments = require("./routes/comments");
 
-//var examusers = require("./routes/examusers");
-//var examusersResponse = require("./routes/examusersResponse");
+var examusers = require("./routes/examusers");
+var examusersResponse = require("./routes/examusersResponse");
 var examquestions = require("./routes/examquestions");
 
 var app = express();
@@ -37,9 +37,9 @@ app.use("/comments", comments);
 
 
 
-//app.use("/examusers", examusers);
+app.use("/examusers", examusers);
 app.use("/examquestions", examquestions);
-//app.use("/examusersresponse", examusersResponse);
+app.use("/examusersresponse", examusersResponse);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
