@@ -5,7 +5,11 @@ const constants = {
   questionsCollection: "questions",
   usersCollections: "users",
   commentsCollections: "comments",
-  userResponseCollection: "usersresponse"
+  userResponseCollection: "usersresponse",
+  examquestionsCollection: "examquestions",
+  examusersCollections: "examusers",
+  examuserResponseCollection: "examusersresponse"
+
 };
 module.exports = constants;
 
