@@ -23,65 +23,18 @@ userRouter
       }
       var collection = db.collection(usersCollections);
       var query = req.query;
-
+      //login the user and giving the dates
+      //users?login=true&userId=
       if (!(Object.keys(query).length === 0 && query.constructor === Object) && query.login === "true" &&
       query.login != undefined && query.userId != undefined
       ) {
        collection.find({ "userId": query.userId }).count({},function (err, usersResults) {
 
          if (usersResults == 1) {
-           db.collection("users").
-             aggregate([
-               {
-                 $lookup: {
-                   from: "usersresponse",
-                   pipeline: [
-                     {
-                       $match: {
-                         $expr: {
-                           $and: [
-                             { $in: [ query.userId, "$usersAnswer.userId"] },
 
-                           ]
-                         }
-                       }
-                     },
-
-                     {
-                       $project: {
-                         date: 1,
-                         "usersAnswer.userId": 1
-                       }
-                     }
-                   ],
-                   as: "userInfo"
-                 }
-               }
-             ]).toArray(function (err, resultsDate) {
-              if (err) throw err;
-              let ObjArray = [];
-              
-              // resultsDate.map((result) =>{
-              //   let id= result.userId;
-              //   let obj = {};
-              //   if(result.userInfo.length != 0){
-              //       result.userInfo.map((userinfo) => {
-
-              //         result.userinfo.usersAnswer.map((useranswer) => {
-              //             if(useranswer.userId === id)
-              //               obj["userid"] = useranswer.userId;
-              //           })
-              //           obj["date"]=userinfo.date;
-                      
-              //       })
-              //       obj["fullname"]=result.fullName;
-                    
-              //       ObjArray.push(obj)
-              //   }
-              // })
-              
-
-               
+          db.collection("usersresponse").find({"usersAnswer.userId": query.userId}, {date: 1})
+           .toArray(function (err, resultsDate) {
+             
                res.json(resultsDate);
                db.close();
              });
