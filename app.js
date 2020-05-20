@@ -12,6 +12,10 @@ var usersResponse = require("./routes/usersResponse");
 var questions = require("./routes/questions");
 var comments = require("./routes/comments");
 
+//var examusers = require("./routes/examusers");
+//var examusersResponse = require("./routes/examusersResponse");
+var examquestions = require("./routes/examquestions");
+
 var app = express();
 
 // uncomment after placing your favicon in /public
@@ -30,6 +34,12 @@ app.use("/users", users);
 app.use("/questions", questions);
 app.use("/usersresponse", usersResponse);
 app.use("/comments", comments);
+
+
+
+//app.use("/examusers", examusers);
+app.use("/examquestions", examquestions);
+//app.use("/examusersresponse", examusersResponse);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
