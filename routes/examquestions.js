@@ -6,6 +6,13 @@ var bodyParser = require("body-parser");
 var uuidv5 = require("uuid").v5;
 var { mongoDbUrl, examquestionsCollection, databaseName } = require("../config");
 
+const uri = `mongodb://localhost:27017/`;
+const dbName = "jindarshan";
+const fullName = uri + dbName;
+const url1 =
+  "mongodb://dbuser:password%40123@cluster0-shard-00-00-qqpkg.mongodb.net:27017,cluster0-shard-00-01-qqpkg.mongodb.net:27017,cluster0-shard-00-02-qqpkg.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true&w=majority";
+
+const connectionString = mongoDbUrl + databaseName;
 examquestionsRouter
   .route("/")
   .get(function(req, res) {
@@ -110,7 +117,7 @@ examquestionsRouter
     });
   });
 
-questionsRouter
+  examquestionsRouter
   .route("/:id")
   .get(function(req, res) {
     var Id = new objectId(req.params.id);
@@ -162,4 +169,4 @@ questionsRouter
     });
   });
 
-module.exports = questionsRouter;
+module.exports = examquestionsRouter;
