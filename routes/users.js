@@ -23,8 +23,8 @@ userRouter
       }
       var collection = db.collection(usersCollections);
       var query = req.query;
-      //login the user and giving the dates
-      //users?login=true&userId=
+      //user login and results in appeared quiz date for the specific users
+      //endpoint- /users?login=true&userId=
       if (!(Object.keys(query).length === 0 && query.constructor === Object) && query.login === "true" &&
       query.login != undefined && query.userId != undefined
       ) {
@@ -48,10 +48,8 @@ userRouter
 
        });
      }
-
-
-
-      //to check if the user exist or not
+      //to check if the user exist or not by count 
+      //query- /?userId=
       else if (
         !(Object.keys(query).length === 0 && query.constructor === Object) &&
         query.userId != undefined
@@ -64,7 +62,9 @@ userRouter
             res.json(resp);
             db.close();
           });
-      } else if (
+      }
+      //get all the users- general end point
+       else if (
         !(Object.keys(query).length === 0 && query.constructor === Object) &&
         query
       ) {
