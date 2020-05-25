@@ -11,6 +11,7 @@ var users = require("./routes/users");
 var usersResponse = require("./routes/usersResponse");
 var questions = require("./routes/questions");
 var comments = require("./routes/comments");
+var bhajan = require("./routes/bhajan");
 
 var examusers = require("./routes/examusers");
 var examusersResponse = require("./routes/examusersResponse");
@@ -34,6 +35,7 @@ app.use("/users", users);
 app.use("/questions", questions);
 app.use("/usersresponse", usersResponse);
 app.use("/comments", comments);
+app.use("/bhajan", bhajan);
 
 
 
