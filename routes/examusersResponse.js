@@ -90,26 +90,36 @@ examuserReponseRouter
       } else if (
         !(Object.keys(query).length === 0 && query.constructor === Object) &&
         query.userresponse != undefined &&
-        query.userId != undefined &&
+        query.userId != undefined && 
+        query.date != undefined &&
         query.userresponse === "true"
       ) {
         db.collection("examusersresponse")
-          .aggregate([
-            {
-              $project: {
-                userreponse: {
-                  $filter: {
-                    input: "$usersAnswer",
-                    as: "userresponse",
-                    cond: {
-                      $eq: ["$$userresponse.userId", query.userId]
-                    }
+        .aggregate(
+              [
+                  { 
+                      "$match" : { 
+                          "date" : query.date
+                      }
+                  }, 
+                  { 
+                      "$project" : { 
+                          "usersResponse" : { 
+                              "$filter" : { 
+                                  "input" : "$usersAnswer", 
+                                  "as" : "useranswer", 
+                                  "cond" : { 
+                                      "$eq" : [
+                                          "$$useranswer.userId", 
+                                          query.userId  
+                                      ]
+                                  }
+                              }
+                          }
+                      }
                   }
-                }
-              }
-            }
-          ])
-          .toArray(function(err, results) {
+              ]
+          ).toArray(function(err, results) {
             if (err) throw err;
             res.json(results);
             db.close();
