@@ -43,11 +43,7 @@ bhajanRouter
         return;
       }
       var bhajans = req.body;
-     
-      console.log(bhajans);
       var collection = db.collection(bhajanCollection);
-
-
       collection.insert(bhajans, function(err, results) {
         console.log(results.insertedIds);
         res.send("update is successful " + results.insertedIds);
@@ -67,7 +63,7 @@ bhajanRouter
         console.log(err);
         return;
       }
-      var collection = db.collection(questionsCollection);
+      var collection = db.collection(bhajanCollection);
       //get the result by searching with id
       collection.findOne({ _id: Id }, function(err, results) {
         res.json(results);
@@ -82,7 +78,7 @@ bhajanRouter
         console.log(err);
         return;
       }
-      var collection = db.collection(questionsCollection);
+      var collection = db.collection(bhajanCollection);
       var fort = req.body;
 
       collection.update({ _id: Id }, { $set: fort }, function(err, result) {
@@ -102,7 +98,7 @@ bhajanRouter
         console.log(err);
         return;
       }
-      var collection = db.collection(questionsCollection);
+      var collection = db.collection(bhajanCollection);
 
       collection.deleteOne({ _id: Id }, function(err, results) {
         res.send("removed");
