@@ -9,7 +9,7 @@ const constants = {
   examquestionsCollection: "examquestions",
   examusersCollections: "examusers",
   examuserResponseCollection: "examusersresponse",
-  bhajan: "bhajan"
+  bhajanCollection: "bhajan"
 
 };
 module.exports = constants;
