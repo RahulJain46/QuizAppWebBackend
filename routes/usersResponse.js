@@ -38,8 +38,8 @@ userReponseRouter
                     $match: {
                       $expr: {
                         $and: [
-                          { $in: ["$$user_Id", "$usersAnswer.userId"] },
-                          { $eq: ["$date", query.date] }
+                          { $eq: ["$date", query.date] },
+                          { $in: ["$$user_Id", "$usersAnswer.userId"] }
                         ]
                       }
                     }

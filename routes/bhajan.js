@@ -1,10 +1,10 @@
 var express = require("express");
-var questionsRouter = express.Router();
+var bhajanRouter = express.Router();
 var mongodb = require("mongodb").MongoClient;
 var objectId = require("mongodb").ObjectID;
 var bodyParser = require("body-parser");
 var uuidv5 = require("uuid").v5;
-var { mongoDbUrl, questionsCollection, databaseName } = require("../config");
+var { mongoDbUrl, bhajan, databaseName } = require("../config");
 
 const uri = `mongodb://localhost:27017/`;
 const dbName = "jindarshan";
@@ -14,7 +14,7 @@ const url1 =
 
 const connectionString = mongoDbUrl + databaseName;
 
-questionsRouter
+bhajanRouter
   .route("/")
   .get(function(req, res) {
     //const client = new MongoClient(uri, { useNewUrlParser: true });
@@ -23,38 +23,17 @@ questionsRouter
         console.log(err);
         return;
       }
-      var collection = db.collection(questionsCollection);
+      var collection = db.collection(bhajan);
       var query = req.query;
       //get all the questions for all the dates
-      if (
-        !(Object.keys(query).length === 0 && query.constructor === Object) &&
-        query.date != undefined &&
-        query.date[1] === "all"
-      ) {
-        collection.find({}, { date: 1 }).toArray(function(err, results) {
-          console.log(results);
-          let resp = results;
-          res.json(resp);
-          db.close();
-        });
-      }  else if (
-        query &&
-        !(Object.keys(query).length === 0 && query.constructor === Object)
-      ) {
-        collection.find(query).toArray(function(err, results) {
-          console.log(results);
-          let resp = results;
-          res.json(resp);
-          db.close();
-        });
-      } else {
+      
         collection.find({}).toArray(function(err, results) {
           console.log(results);
           let resp = results;
           res.json(resp);
           db.close();
         });
-      }
+      
     });
   })
   .post(function(req, res) {
@@ -85,7 +64,7 @@ questionsRouter
     });
   });
 
-questionsRouter
+bhajanRouter
   .route("/:id")
   .get(function(req, res) {
     var Id = new objectId(req.params.id);
@@ -138,4 +117,4 @@ questionsRouter
     });
   });
 
-module.exports = questionsRouter;
+module.exports = bhajanRouter;
