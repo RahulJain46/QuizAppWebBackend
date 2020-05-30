@@ -85,6 +85,46 @@ userReponseRouter
           });
       } else if (
         !(Object.keys(query).length === 0 && query.constructor === Object) &&
+        query.userresponse != undefined &&
+        query.userId != undefined &&
+        query.date != undefined &&
+        query.userresponse === "true"
+      ) {
+        db.collection(userResponseCollection)
+          .aggregate([
+            {
+              $match: {
+                date: query.date
+              }
+            },
+            {
+              $project: {
+                usersResponse: {
+                  $filter: {
+                    input: "$usersAnswer",
+                    as: "useranswer",
+                    cond: {
+                      $eq: ["$$useranswer.userId", query.userId]
+                    }
+                  }
+                }
+              }
+            }
+          ])
+          .toArray(function(err, results) {
+            if (err) throw err;
+            if (results[0].usersResponse.length) {
+              res.json(results);
+              db.close();
+            } else {
+              let obj = {};
+              obj["loginResponse"] = false;
+              res.json(obj);
+              db.close();
+            }
+          });
+      } else if (
+        !(Object.keys(query).length === 0 && query.constructor === Object) &&
         query.date != undefined &&
         query.userId != undefined
       ) {

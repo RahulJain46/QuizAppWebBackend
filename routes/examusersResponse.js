@@ -117,8 +117,15 @@ examuserReponseRouter
           ])
           .toArray(function(err, results) {
             if (err) throw err;
-            res.json(results);
-            db.close();
+            if (results[0].usersResponse.length) {
+              res.json(results);
+              db.close();
+            } else {
+              let obj = {};
+              obj["loginResponse"] = false;
+              res.json(obj);
+              db.close();
+            }
           });
       } else if (
         !(Object.keys(query).length === 0 && query.constructor === Object) &&
