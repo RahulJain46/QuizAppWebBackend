@@ -4,7 +4,7 @@ var mongodb = require("mongodb").MongoClient;
 var objectId = require("mongodb").ObjectID;
 var bodyParser = require("body-parser");
 var uuidv5 = require("uuid").v5;
-var { mongoDbUrl, bhajan, databaseName } = require("../config");
+var { mongoDbUrl, bhajanCollection, databaseName } = require("../config");
 
 const uri = `mongodb://localhost:27017/`;
 const dbName = "jindarshan";
@@ -23,7 +23,7 @@ bhajanRouter
         console.log(err);
         return;
       }
-      var collection = db.collection(bhajan);
+      var collection = db.collection(bhajanCollection);
       var query = req.query;
       //get all the questions for all the dates
       
@@ -42,25 +42,15 @@ bhajanRouter
         console.log(err);
         return;
       }
-      var questions = req.body;
-      questions.questions.map(question => {
-        let id = uuidv5(question.question, uuidv5.DNS);
-        Object.assign(question, { _id: id });
-      });
-      console.log(questions);
-      var collection = db.collection(questionsCollection);
-      collection.insert(questions, function(err, results) {
+      var bhajans = req.body;
+      var collection = db.collection(bhajanCollection);
+      collection.insert(bhajans, function(err, results) {
         console.log(results.insertedIds);
-        const userResponse = {
-          date: questions.date,
-        usersAnswer:[]
-        }
-        db.collection("usersresponse").insert(userResponse,function(err,results){
-          console.log(results.insertedIds)
-          res.send("update is successful " + results.insertedIds);
-          db.close();
-        })
+        res.send("update is successful " + results.insertedIds);
+        db.close();
       });
+        
+     
     });
   });
 
@@ -73,7 +63,7 @@ bhajanRouter
         console.log(err);
         return;
       }
-      var collection = db.collection(questionsCollection);
+      var collection = db.collection(bhajanCollection);
       //get the result by searching with id
       collection.findOne({ _id: Id }, function(err, results) {
         res.json(results);
@@ -88,7 +78,7 @@ bhajanRouter
         console.log(err);
         return;
       }
-      var collection = db.collection(questionsCollection);
+      var collection = db.collection(bhajanCollection);
       var fort = req.body;
 
       collection.update({ _id: Id }, { $set: fort }, function(err, result) {
@@ -108,7 +98,7 @@ bhajanRouter
         console.log(err);
         return;
       }
-      var collection = db.collection(questionsCollection);
+      var collection = db.collection(bhajanCollection);
 
       collection.deleteOne({ _id: Id }, function(err, results) {
         res.send("removed");
