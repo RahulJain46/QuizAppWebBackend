@@ -12,6 +12,7 @@ var usersResponse = require("./routes/usersResponse");
 var questions = require("./routes/questions");
 var comments = require("./routes/comments");
 var bhajan = require("./routes/bhajan");
+var bhajanReactions = require("./routes/bhajanReactions");
 
 var examusers = require("./routes/examusers");
 var examusersResponse = require("./routes/examusersResponse");
@@ -36,8 +37,7 @@ app.use("/questions", questions);
 app.use("/usersresponse", usersResponse);
 app.use("/comments", comments);
 app.use("/bhajan", bhajan);
-
-
+app.use("/bhajanreactions", bhajanReactions);
 
 app.use("/examusers", examusers);
 app.use("/examquestions", examquestions);
