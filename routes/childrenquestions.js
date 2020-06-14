@@ -68,7 +68,7 @@ childrenquestionsRouter
         let id = uuidv5(question.question, uuidv5.DNS);
         Object.assign(question, { _id: id });
       });
-      console.log(questions);
+      // console.log(questions);
       var collection = db.collection(childrenquestionsCollection);
       collection.insert(questions, function(err, results) {
         console.log(results.insertedIds);
