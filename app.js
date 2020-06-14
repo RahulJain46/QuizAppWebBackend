@@ -18,6 +18,9 @@ var examusers = require("./routes/examusers");
 var examusersResponse = require("./routes/examusersResponse");
 var examquestions = require("./routes/examquestions");
 
+var childrenusersResponse = require("./routes/childrenusersResponse");
+var childrenquestions = require("./routes/childrenquestions");
+
 var app = express();
 
 // uncomment after placing your favicon in /public
@@ -42,6 +45,9 @@ app.use("/bhajanreactions", bhajanReactions);
 app.use("/examusers", examusers);
 app.use("/examquestions", examquestions);
 app.use("/examusersresponse", examusersResponse);
+
+app.use("/childrenusersresponse", childrenusersResponse);
+app.use("/childrenquestions", childrenquestions);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
