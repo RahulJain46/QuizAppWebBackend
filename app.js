@@ -8,7 +8,9 @@ var cors = require("cors");
 
 var index = require("./routes/index");
 var users = require("./routes/users");
+var kbcUsers = require("./routes/kbcUsers");
 var usersResponse = require("./routes/usersResponse");
+var kbcUserResponse = require("./routes/kbcUserResponse");
 var questions = require("./routes/questions");
 var comments = require("./routes/comments");
 var bhajan = require("./routes/bhajan");
@@ -36,8 +38,10 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", index);
 app.use("/users", users);
+app.use("/kbcusers", kbcUsers);
 app.use("/questions", questions);
 app.use("/usersresponse", usersResponse);
+app.use("/kbcusersresponse", kbcUserResponse);
 app.use("/comments", comments);
 app.use("/bhajan", bhajan);
 app.use("/bhajanreactions", bhajanReactions);
