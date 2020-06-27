@@ -4,13 +4,17 @@ const constants = {
   databaseName: "jindarshandev",
   questionsCollection: "questions",
   usersCollections: "users",
+  kbcUsersCollection: "kbcusers",
   commentsCollections: "comments",
   userResponseCollection: "usersresponse",
+  kbcUserResponseCollection: "kbcusersresponse",
   examquestionsCollection: "examquestions",
   examusersCollections: "examusers",
   examuserResponseCollection: "examusersresponse",
   bhajanCollection: "bhajan",
-  bhajanReactionsCollection: "bhajanreactions"
+  bhajanReactionsCollection: "bhajanreactions",
+  childrenquestionsCollection: "childrenquestions",
+  childrenuserResponseCollection: "childrenusersresponse"
 };
 module.exports = constants;
 

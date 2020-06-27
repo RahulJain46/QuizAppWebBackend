@@ -8,7 +8,9 @@ var cors = require("cors");
 
 var index = require("./routes/index");
 var users = require("./routes/users");
+var kbcUsers = require("./routes/kbcUsers");
 var usersResponse = require("./routes/usersResponse");
+var kbcUserResponse = require("./routes/kbcUserResponse");
 var questions = require("./routes/questions");
 var comments = require("./routes/comments");
 var bhajan = require("./routes/bhajan");
@@ -17,6 +19,9 @@ var bhajanReactions = require("./routes/bhajanReactions");
 var examusers = require("./routes/examusers");
 var examusersResponse = require("./routes/examusersResponse");
 var examquestions = require("./routes/examquestions");
+
+var childrenusersResponse = require("./routes/childrenusersResponse");
+var childrenquestions = require("./routes/childrenquestions");
 
 var app = express();
 
@@ -33,8 +38,10 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", index);
 app.use("/users", users);
+app.use("/kbcusers", kbcUsers);
 app.use("/questions", questions);
 app.use("/usersresponse", usersResponse);
+app.use("/kbcusersresponse", kbcUserResponse);
 app.use("/comments", comments);
 app.use("/bhajan", bhajan);
 app.use("/bhajanreactions", bhajanReactions);
@@ -42,6 +49,9 @@ app.use("/bhajanreactions", bhajanReactions);
 app.use("/examusers", examusers);
 app.use("/examquestions", examquestions);
 app.use("/examusersresponse", examusersResponse);
+
+app.use("/childrenusersresponse", childrenusersResponse);
+app.use("/childrenquestions", childrenquestions);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
