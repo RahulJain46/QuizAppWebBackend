@@ -47,7 +47,23 @@ userRouter
          }
 
        });
-     }
+    
+      }
+      //to check if the user exist or not by count for children
+      //query- /?userId=
+      else if (
+        !(Object.keys(query).length === 0 && query.constructor === Object) && query.child === "true" &&
+        query.userId != undefined
+      ) {
+        collection
+          .find({child: "true", userId: query.userId })
+          .count({}, function(err, results) {
+            console.log(results);
+            let resp = results;
+            res.json(resp);
+            db.close();
+          });
+      }
       //to check if the user exist or not by count 
       //query- /?userId=
       else if (
