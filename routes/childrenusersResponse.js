@@ -77,6 +77,7 @@ childrenusersResponseRouter
                 });
                 obj["fullname"] = result.fullname;
                 obj["city"] = result.city;
+                obj["age"] = result.age;
                 ObjArray.push(obj);
               }
             });
