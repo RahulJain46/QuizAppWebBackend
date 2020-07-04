@@ -101,7 +101,15 @@ userRouter
       var date = ISTTime.toString().substring(4, 24);
 
       var collection = db.collection(usersCollections);
-      let id = uuidv5(user.fullname.toLowerCase() + user.mobile, uuidv5.DNS);
+
+
+      if(user.child == "true"){
+        var id = uuidv5(user.fullname.toLowerCase() + user.mobile + "_child", uuidv5.DNS);  
+      }else{
+        var id = uuidv5(user.fullname.toLowerCase() + user.mobile, uuidv5.DNS);
+      }
+
+      // let id = uuidv5(user.fullname.toLowerCase() + user.mobile, uuidv5.DNS);
       Object.assign(user, { userId: id, ip, date });
       collection.insert(user, function(err, results) {
         console.log(results.insertedIds);
