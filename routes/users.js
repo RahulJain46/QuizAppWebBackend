@@ -47,7 +47,23 @@ userRouter
          }
 
        });
-     }
+    
+      }
+      //to check if the user exist or not by count for children
+      //query- /?userId=
+      else if (
+        !(Object.keys(query).length === 0 && query.constructor === Object) && query.child === "true" &&
+        query.userId != undefined
+      ) {
+        collection
+          .find({child: "true", userId: query.userId })
+          .count({}, function(err, results) {
+            console.log(results);
+            let resp = results;
+            res.json(resp);
+            db.close();
+          });
+      }
       //to check if the user exist or not by count 
       //query- /?userId=
       else if (
@@ -101,7 +117,15 @@ userRouter
       var date = ISTTime.toString().substring(4, 24);
 
       var collection = db.collection(usersCollections);
-      let id = uuidv5(user.fullname.toLowerCase() + user.mobile, uuidv5.DNS);
+
+
+      if(user.child == "true"){
+        var id = uuidv5(user.fullname.toLowerCase() + user.mobile + "_child", uuidv5.DNS);  
+      }else{
+        var id = uuidv5(user.fullname.toLowerCase() + user.mobile, uuidv5.DNS);
+      }
+
+      // let id = uuidv5(user.fullname.toLowerCase() + user.mobile, uuidv5.DNS);
       Object.assign(user, { userId: id, ip, date });
       collection.insert(user, function(err, results) {
         console.log(results.insertedIds);
