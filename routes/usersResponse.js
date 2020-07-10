@@ -30,33 +30,37 @@ userReponseRouter
             {
               $lookup: {
                 from: "usersresponse",
-
-                let: { user_Id: "$userId" },
-
+                let: { id: "$userId" },
                 pipeline: [
+                  { $match: { date: query.date } },
                   {
-                    $match: {
-                      $expr: {
-                        $and: [
-                          { $eq: ["$date", query.date] },
-                          { $in: ["$$user_Id", "$usersAnswer.userId"] }
-                        ]
-                      }
-                    }
+                    $match: { $expr: { $in: ["$$id", "$usersAnswer.userId"] } }
                   },
-
+                  { $unwind: "$usersAnswer" },
                   {
-                    $project: {
-                      "usersAnswer.userId": 1,
-                      "usersAnswer.score": 1,
-                      "usersAnswer.time": 1,
-                      "usersAnswer.feedback": 1,
-                      "usersAnswer.suggestion": 1,
-                      date: 1
-                    }
+                    $match: { $expr: { $eq: ["$usersAnswer.userId", "$$id"] } }
                   }
                 ],
                 as: "userInfo"
+              }
+            },
+
+            {
+              $addFields: {
+                size_of_info: { $size: "$userInfo" }
+              }
+            },
+            { $match: { size_of_info: { $gt: 0 } } },
+
+            {
+              $project: {
+                fullname: 1,
+                city: 1,
+                userId: 1,
+                "userInfo.usersAnswer.score": 1,
+                "userInfo.usersAnswer.time": 1,
+                "userInfo.usersAnswer.suggestion": 1,
+                "userInfo.usersAnswer.userId": 1
               }
             }
           ])
@@ -67,14 +71,10 @@ userReponseRouter
               let id = result.userId;
               let obj = {};
               if (result.userInfo.length != 0) {
-                result.userInfo[0].usersAnswer.map(useranswer => {
-                  if (useranswer.userId === id) {
-                    obj["time"] = useranswer.time;
-                    obj["score"] = useranswer.score;
-                    obj["feedback"] = useranswer.feedback;
-                    obj["suggestion"] = useranswer.suggestion;
-                  }
-                });
+                obj["time"] = result.userInfo[0].usersAnswer.time;
+                obj["score"] = result.userInfo[0].usersAnswer.score;
+                obj["feedback"] = result.userInfo[0].usersAnswer.feedback;
+                obj["suggestion"] = result.userInfo[0].usersAnswer.suggestion;
                 obj["fullname"] = result.fullname;
                 obj["city"] = result.city;
                 ObjArray.push(obj);
