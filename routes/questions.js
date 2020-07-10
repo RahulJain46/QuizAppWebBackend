@@ -37,7 +37,7 @@ questionsRouter
           res.json(resp);
           db.close();
         });
-      }  else if (
+      } else if (
         query &&
         !(Object.keys(query).length === 0 && query.constructor === Object)
       ) {
@@ -74,13 +74,25 @@ questionsRouter
         console.log(results.insertedIds);
         const userResponse = {
           date: questions.date,
-        usersAnswer:[]
-        }
-        db.collection("usersresponse").insert(userResponse,function(err,results){
-          console.log(results.insertedIds)
-          res.send("update is successful " + results.insertedIds);
-          db.close();
-        })
+          usersAnswer: []
+        };
+        const kbcUserResponse = {
+          date: questions.date,
+          usersAnswer: []
+        };
+        db.collection("kbcusersresponse").insert(kbcUserResponse, function(
+          err,
+          results
+        ) {
+          db.collection("usersresponse").insert(userResponse, function(
+            err,
+            results
+          ) {
+            console.log(results.insertedIds);
+            res.send("update is successful " + results.insertedIds);
+            db.close();
+          });
+        });
       });
     });
   });
