@@ -6,18 +6,21 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "aws-sdk": "^2.742.0",
     "body-parser": "~1.18.2",
     "cookie-parser": "~1.4.3",
+    "cors": "^2.8.4",
     "debug": "~2.6.9",
     "express": "~4.15.5",
     "express-session": "^1.15.6",
     "jade": "~1.11.0",
     "mongodb": "~2.2.33",
     "morgan": "~1.9.0",
+    "multer": "^1.4.2",
+    "multer-s3": "^2.9.0",
     "passport": "^0.4.0",
     "passport-google-oauth": "^1.0.0",
     "passport-local": "^1.0.0",
-    "cors": "^2.8.4",
     "uuid": "^7.0.3"
   }
 }
