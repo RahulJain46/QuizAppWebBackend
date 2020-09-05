@@ -22,6 +22,7 @@ var examquestions = require("./routes/examquestions");
 
 var childrenusersResponse = require("./routes/childrenusersResponse");
 var childrenquestions = require("./routes/childrenquestions");
+var uploadImages = require("./routes/uploadImages");
 
 var app = express();
 
@@ -52,6 +53,7 @@ app.use("/examusersresponse", examusersResponse);
 
 app.use("/childrenusersresponse", childrenusersResponse);
 app.use("/childrenquestions", childrenquestions);
+app.use("/upload", uploadImages);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

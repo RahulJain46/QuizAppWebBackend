@@ -11,7 +11,7 @@ const uri = `mongodb://localhost:27017/`;
 const dbName = "jindarshan";
 const fullName = uri + dbName;
 
-const connectionString = mongoDbUrl + databaseName;
+const connectionString = process.env.MONGODBURL + process.env.DATABASENAME;
 
 kbcuserRouter
   .route("/")

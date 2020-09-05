@@ -11,7 +11,7 @@ const uri = `mongodb://localhost:27017/`;
 const dbName = "jindarshan";
 const fullName = uri + dbName;
 
-const connectionString = mongoDbUrl + databaseName;
+const connectionString = process.env.MONGODBURL + process.env.DATABASENAME;
 
 userRouter
   .route("/")
@@ -25,38 +25,39 @@ userRouter
       var query = req.query;
       //user login and results in appeared quiz date for the specific users
       //endpoint- /users?login=true&userId=
-      if (!(Object.keys(query).length === 0 && query.constructor === Object) && query.login === "true" &&
-      query.login != undefined && query.userId != undefined
+      if (
+        !(Object.keys(query).length === 0 && query.constructor === Object) &&
+        query.login === "true" &&
+        query.login != undefined &&
+        query.userId != undefined
       ) {
-       collection.find({ "userId": query.userId }).count({},function (err, usersResults) {
-
-         if (usersResults == 1) {
-
-          db.collection("usersresponse").find({"usersAnswer.userId": query.userId}, {date: 1})
-           .toArray(function (err, resultsDate) {
-             
-               res.json(resultsDate);
-               db.close();
-             });
-         }
-         else {
-           let obj = {};
-           obj["loginResponse"] = false;
-           res.json(obj);
-           db.close();
-         }
-
-       });
-    
+        collection
+          .find({ userId: query.userId })
+          .count({}, function(err, usersResults) {
+            if (usersResults == 1) {
+              db.collection("usersresponse")
+                .find({ "usersAnswer.userId": query.userId }, { date: 1 })
+                .toArray(function(err, resultsDate) {
+                  res.json(resultsDate);
+                  db.close();
+                });
+            } else {
+              let obj = {};
+              obj["loginResponse"] = false;
+              res.json(obj);
+              db.close();
+            }
+          });
       }
       //to check if the user exist or not by count for children
       //query- /?userId=
       else if (
-        !(Object.keys(query).length === 0 && query.constructor === Object) && query.child === "true" &&
+        !(Object.keys(query).length === 0 && query.constructor === Object) &&
+        query.child === "true" &&
         query.userId != undefined
       ) {
         collection
-          .find({child: "true", userId: query.userId })
+          .find({ child: "true", userId: query.userId })
           .count({}, function(err, results) {
             console.log(results);
             let resp = results;
@@ -64,7 +65,7 @@ userRouter
             db.close();
           });
       }
-      //to check if the user exist or not by count 
+      //to check if the user exist or not by count
       //query- /?userId=
       else if (
         !(Object.keys(query).length === 0 && query.constructor === Object) &&
@@ -80,7 +81,7 @@ userRouter
           });
       }
       //get all the users- general end point
-       else if (
+      else if (
         !(Object.keys(query).length === 0 && query.constructor === Object) &&
         query
       ) {
@@ -118,10 +119,12 @@ userRouter
 
       var collection = db.collection(usersCollections);
 
-
-      if(user.child == "true"){
-        var id = uuidv5(user.fullname.toLowerCase() + user.mobile + "_child", uuidv5.DNS);  
-      }else{
+      if (user.child == "true") {
+        var id = uuidv5(
+          user.fullname.toLowerCase() + user.mobile + "_child",
+          uuidv5.DNS
+        );
+      } else {
         var id = uuidv5(user.fullname.toLowerCase() + user.mobile, uuidv5.DNS);
       }
 

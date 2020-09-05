@@ -6,7 +6,7 @@ var bodyParser = require("body-parser");
 var uuidv5 = require("uuid").v5;
 var { mongoDbUrl, commentsCollections, databaseName } = require("../config");
 
-const connectionString = mongoDbUrl + databaseName;
+const connectionString = process.env.MONGODBURL + process.env.DATABASENAME;
 
 commentsRouter
   .route("/")
