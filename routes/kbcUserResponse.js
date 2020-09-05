@@ -12,7 +12,7 @@ var {
 
 const uri = `mongodb://localhost:27017/`;
 const dbName = "jindarshan";
-const connectionString = mongoDbUrl + databaseName;
+const connectionString = process.env.MONGODBURL + process.env.DATABASENAME;
 /* GET users listing. */
 kbcUserReponseRouter
   .route("/")

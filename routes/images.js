@@ -9,7 +9,7 @@ var imagesRoute = express.Router();
 //ar upload = multer({ limits: { fileSize: 2000000 }, dest: "/uploads/" });
 var { mongoDbUrl, commentsCollections, databaseName } = require("../config");
 
-const connectionString = mongoDbUrl + databaseName;
+const connectionString = process.env.MONGODBURL + process.env.DATABASENAME;
 
 // questionsRouter.route("/")
 //  .post('/uploadpicture', upload.single('picture'), function (req, res){
