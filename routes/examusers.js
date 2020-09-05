@@ -11,7 +11,7 @@ const uri = `mongodb://localhost:27017/`;
 const dbName = "jindarshan";
 const fullName = uri + dbName;
 
-const connectionString = mongoDbUrl + databaseName;
+const connectionString = process.env.MONGODBURL + process.env.DATABASENAME;
 
 examuserRouter
   .route("/")
@@ -25,31 +25,30 @@ examuserRouter
       var query = req.query;
       //login the user and giving the dates
       //users?login=true&userId=
-      if (!(Object.keys(query).length === 0 && query.constructor === Object) && query.login === "true" &&
-      query.login != undefined && query.userId != undefined
+      if (
+        !(Object.keys(query).length === 0 && query.constructor === Object) &&
+        query.login === "true" &&
+        query.login != undefined &&
+        query.userId != undefined
       ) {
-       collection.find({ "userId": query.userId }).count({},function (err, usersResults) {
-
-         if (usersResults == 1) {
-
-          db.collection("examusersresponse").find({"usersAnswer.userId": query.userId}, {date: 1})
-           .toArray(function (err, resultsDate) {
-             
-               res.json(resultsDate);
-               db.close();
-             });
-         }
-         else {
-           let obj = {};
-           obj["loginResponse"] = false;
-           res.json(obj);
-           db.close();
-         }
-
-       });
-     }
-
-
+        collection
+          .find({ userId: query.userId })
+          .count({}, function(err, usersResults) {
+            if (usersResults == 1) {
+              db.collection("examusersresponse")
+                .find({ "usersAnswer.userId": query.userId }, { date: 1 })
+                .toArray(function(err, resultsDate) {
+                  res.json(resultsDate);
+                  db.close();
+                });
+            } else {
+              let obj = {};
+              obj["loginResponse"] = false;
+              res.json(obj);
+              db.close();
+            }
+          });
+      }
 
       //to check if the user exist or not
       else if (

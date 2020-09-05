@@ -12,7 +12,7 @@ const fullName = uri + dbName;
 const url1 =
   "mongodb://dbuser:password%40123@cluster0-shard-00-00-qqpkg.mongodb.net:27017,cluster0-shard-00-01-qqpkg.mongodb.net:27017,cluster0-shard-00-02-qqpkg.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true&w=majority";
 
-const connectionString = mongoDbUrl + databaseName;
+const connectionString = process.env.MONGODBURL + process.env.DATABASENAME;
 
 questionsRouter
   .route("/")

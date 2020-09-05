@@ -10,7 +10,7 @@ var {
   databaseName
 } = require("../config");
 
-const connectionString = mongoDbUrl + databaseName;
+const connectionString = process.env.MONGODBURL + process.env.DATABASENAME;
 
 bhajanReactionsRoute
   .route("/")

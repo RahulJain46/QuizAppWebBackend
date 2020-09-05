@@ -12,7 +12,7 @@ const fullName = uri + dbName;
 const url1 =
   "mongodb://dbuser:password%40123@cluster0-shard-00-00-qqpkg.mongodb.net:27017,cluster0-shard-00-01-qqpkg.mongodb.net:27017,cluster0-shard-00-02-qqpkg.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true&w=majority";
 
-const connectionString = mongoDbUrl + databaseName;
+const connectionString = process.env.MONGODBURL + process.env.DATABASENAME;
 
 bhajanRouter
   .route("/")
@@ -26,14 +26,13 @@ bhajanRouter
       var collection = db.collection(bhajanCollection);
       var query = req.query;
       //get all the questions for all the dates
-      
-        collection.find({}).toArray(function(err, results) {
-          console.log(results);
-          let resp = results;
-          res.json(resp);
-          db.close();
-        });
-      
+
+      collection.find({}).toArray(function(err, results) {
+        console.log(results);
+        let resp = results;
+        res.json(resp);
+        db.close();
+      });
     });
   })
   .post(function(req, res) {
@@ -49,8 +48,6 @@ bhajanRouter
         res.send("update is successful " + results.insertedIds);
         db.close();
       });
-        
-     
     });
   });
 

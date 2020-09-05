@@ -4,11 +4,15 @@ var mongodb = require("mongodb").MongoClient;
 var objectId = require("mongodb").ObjectID;
 var bodyParser = require("body-parser");
 var uuidv5 = require("uuid").v5;
-var { mongoDbUrl, childrenuserResponseCollection, databaseName } = require("../config");
+var {
+  mongoDbUrl,
+  childrenuserResponseCollection,
+  databaseName
+} = require("../config");
 
 const uri = `mongodb://localhost:27017/`;
 const dbName = "jindarshan";
-const connectionString = mongoDbUrl + databaseName;
+const connectionString = process.env.MONGODBURL + process.env.DATABASENAME;
 /* GET users listing. */
 childrenusersResponseRouter
   .route("/")
@@ -206,7 +210,7 @@ childrenusersResponseRouter
     });
   });
 
-  childrenusersResponseRouter
+childrenusersResponseRouter
   .route("/:id")
   .get(function(req, res) {
     var Id = new objectId(req.params.id);
