@@ -1,14 +1,20 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Launch Program",
-            "program": "${workspaceFolder}/server.js"
-        }
-    ]
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Program",
+      "program": "${workspaceFolder}/server.js",
+      "env": {
+        "ACCESSKEYID": "AKIAJP6U5TI6BOVIYLVQ",
+        "DATABASENAME": "jindarshandev",
+        "MONGODBURL": "mongodb://dbuser:password%40123@cluster0-shard-00-00-qqpkg.mongodb.net:27017,cluster0-shard-00-01-qqpkg.mongodb.net:27017,cluster0-shard-00-02-qqpkg.mongodb.net:27017/jindarshandev?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true/",
+        "SECRETACCESSKEY": "//qDZL3YeRqDACAzDvT8IdHPokQpnQbpFxPkFkY0"
+      }
+    }
+  ]
 }
