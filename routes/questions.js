@@ -25,7 +25,14 @@ questionsRouter
       }
       var collection = db.collection(questionsCollection);
       var query = req.query;
+      var paginationQuery = {};
+      var pageNo = parseInt(req.query.pageNo);
+      var size = parseInt(req.query.size);
       //get all the questions for all the dates
+      paginationQuery.skip = size * (pageNo - 1);
+      paginationQuery.limit = size;
+      paginationQuery.sort = { _id: 1 };
+
       if (
         !(Object.keys(query).length === 0 && query.constructor === Object) &&
         query.date != undefined &&
@@ -36,6 +43,17 @@ questionsRouter
           let resp = results;
           res.json(resp);
           db.close();
+        });
+      } else if (pageNo && size) {
+        collection.count({}, function(err, totalCount) {
+          collection
+            .find({}, {}, paginationQuery)
+            .toArray(function(err, results) {
+              var totalPages = Math.ceil(totalCount / size);
+              response = { error: false, message: results, pages: totalPages };
+              res.json(results);
+              db.close();
+            });
         });
       } else if (
         query &&
