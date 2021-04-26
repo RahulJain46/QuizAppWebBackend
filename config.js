@@ -5,13 +5,15 @@ const constants = {
   commentsCollections: "comments",
   userResponseCollection: "usersresponse",
   kbcUserResponseCollection: "kbcusersresponse",
+  kbcChildrenUserResponseCollection: "kbcchildrenusersresponse",
   examquestionsCollection: "examquestions",
   examusersCollections: "examusers",
   examuserResponseCollection: "examusersresponse",
   bhajanCollection: "bhajan",
   bhajanReactionsCollection: "bhajanreactions",
   childrenquestionsCollection: "childrenquestions",
-  childrenuserResponseCollection: "childrenusersresponse"
+  childrenuserResponseCollection: "childrenusersresponse",
+  pumpsCollection: "pumps"
 };
 module.exports = constants;
 

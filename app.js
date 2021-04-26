@@ -11,6 +11,7 @@ var users = require("./routes/users");
 var kbcUsers = require("./routes/kbcUsers");
 var usersResponse = require("./routes/usersResponse");
 var kbcUserResponse = require("./routes/kbcUserResponse");
+var kbcChildrenUserResponse = require("./routes/kbcChildrenUserResponse");
 var questions = require("./routes/questions");
 var comments = require("./routes/comments");
 var bhajan = require("./routes/bhajan");
@@ -23,6 +24,7 @@ var examquestions = require("./routes/examquestions");
 var childrenusersResponse = require("./routes/childrenusersResponse");
 var childrenquestions = require("./routes/childrenquestions");
 var uploadImages = require("./routes/uploadImages");
+var pumps = require("./routes/pumps");
 
 var app = express();
 
@@ -43,6 +45,7 @@ app.use("/kbcusers", kbcUsers);
 app.use("/questions", questions);
 app.use("/usersresponse", usersResponse);
 app.use("/kbcusersresponse", kbcUserResponse);
+app.use("/kbcchildrenusersresponse", kbcChildrenUserResponse);
 app.use("/comments", comments);
 app.use("/bhajan", bhajan);
 app.use("/bhajanreactions", bhajanReactions);
@@ -54,6 +57,7 @@ app.use("/examusersresponse", examusersResponse);
 app.use("/childrenusersresponse", childrenusersResponse);
 app.use("/childrenquestions", childrenquestions);
 app.use("/upload", uploadImages);
+app.use("/pumps", pumps);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -80,14 +80,19 @@ childrenquestionsRouter
           date: questions.date,
           usersAnswer: []
         };
-        db.collection("childrenusersresponse").insert(userResponse, function(
-          err,
-          results
-        ) {
-          console.log(results.insertedIds);
-          res.send("update is successful " + results.insertedIds);
-          db.close();
-        });
+        db.collection("kbcchildrenusersresponse").insert(
+          kbcUserResponse,
+          function(err, results) {
+            db.collection("childrenusersresponse").insert(
+              userResponse,
+              function(err, results) {
+                console.log(results.insertedIds);
+                res.send("update is successful " + results.insertedIds);
+                db.close();
+              }
+            );
+          }
+        );
       });
     });
   });
