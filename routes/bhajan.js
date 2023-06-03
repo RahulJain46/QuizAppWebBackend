@@ -1,107 +1,69 @@
-var express = require("express");
-var bhajanRouter = express.Router();
-var mongodb = require("mongodb").MongoClient;
-var objectId = require("mongodb").ObjectID;
-var bodyParser = require("body-parser");
-var uuidv5 = require("uuid").v5;
-var { mongoDbUrl, bhajanCollection, databaseName } = require("../config");
+const { Router } = require('express');
+const { MongoClient } = require('mongodb');
+require('dotenv').config();
+const bhajanRouter = Router();
 
-const uri = `mongodb://localhost:27017/`;
-const dbName = "jindarshan";
-const fullName = uri + dbName;
-const url1 =
-  "mongodb://dbuser:password%40123@cluster0-shard-00-00-qqpkg.mongodb.net:27017,cluster0-shard-00-01-qqpkg.mongodb.net:27017,cluster0-shard-00-02-qqpkg.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true&w=majority";
+// MongoDB connection string
+const connectionString = process.env.MONGODBURL
+console.log(connectionString, "string")
+//const uri = 'mongodb://dbuser:password%40123@cluster0-shard-00-00-qqpkg.mongodb.net:27017,cluster0-shard-00-01-qqpkg.mongodb.net:27017,cluster0-shard-00-02-qqpkg.mongodb.net:27017/jindarshan?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true&w=majority';
+const uri = connectionString
 
-const connectionString = process.env.MONGODBURL + process.env.DATABASENAME;
-
-bhajanRouter
-  .route("/")
-  .get(function(req, res) {
-    //const client = new MongoClient(uri, { useNewUrlParser: true });
-    mongodb.connect(connectionString, function(err, db) {
-      if (err) {
-        console.log(err);
-        return;
-      }
-      var collection = db.collection(bhajanCollection);
-      var query = req.query;
-      //get all the questions for all the dates
-
-      collection.find({}).toArray(function(err, results) {
-        console.log(results);
-        let resp = results;
-        res.json(resp);
-        db.close();
+// Define a route to retrieve all users or create a new user
+bhajanRouter.route('/')
+  .get(async (req, res) => {
+    try {
+      const client = await MongoClient.connect(uri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
       });
-    });
+      console.log('Connected to MongoDB');
+
+      // Get a reference to the "users" collection
+      const usersCollection = client.db('jindarshan').collection('bhajan');
+
+      const users = await usersCollection.find().toArray();
+      res.json(users);
+
+      // Close the database connection after the response is sent
+      await client.close();
+    } catch (err) {
+      console.error('Error retrieving users', err);
+      res.status(500).send('Internal server error');
+    }
   })
-  .post(function(req, res) {
-    mongodb.connect(connectionString, function(err, db) {
-      if (err) {
-        console.log(err);
-        return;
-      }
-      var bhajans = req.body;
-      var collection = db.collection(bhajanCollection);
-      collection.insert(bhajans, function(err, results) {
-        console.log(results.insertedIds);
-        res.send("update is successful " + results.insertedIds);
-        db.close();
-      });
-    });
-  });
+  .post(async (req, res) => {
+    const { name, email, age } = req.body;
 
-bhajanRouter
-  .route("/:id")
-  .get(function(req, res) {
-    var Id = new objectId(req.params.id);
-    mongodb.connect(connectionString, function(err, db) {
-      if (err) {
-        console.log(err);
-        return;
-      }
-      var collection = db.collection(bhajanCollection);
-      //get the result by searching with id
-      collection.findOne({ _id: Id }, function(err, results) {
-        res.json(results);
-        db.close();
-      });
-    });
-  })
-  //put method to edit
-  .put(function(req, res) {
-    mongodb.connect(connectionString, function(err, db) {
-      if (err) {
-        console.log(err);
-        return;
-      }
-      var collection = db.collection(bhajanCollection);
-      var fort = req.body;
+    if (!name || !email || !age) {
+      res.status(400).send('Invalid input');
+      return;
+    }
 
-      collection.update({ _id: Id }, { $set: fort }, function(err, result) {
-        if (err) {
-          throw err;
-        }
-        res.send("updated");
-        db.close();
+    try {
+      const client = await MongoClient.connect(uri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
       });
-    });
-  })
-  //delete method
-  .delete(function(req, res) {
-    var Id = new objectId(req.params.id);
-    mongodb.connect(connectionString, function(err, db) {
-      if (err) {
-        console.log(err);
-        return;
-      }
-      var collection = db.collection(bhajanCollection);
+      console.log('Connected to MongoDB');
 
-      collection.deleteOne({ _id: Id }, function(err, results) {
-        res.send("removed");
-        db.close();
+      // Get a reference to the "users" collection
+      const usersCollection = client.db('mydatabase').collection('users');
+
+      const result = await usersCollection.insertOne({
+        name,
+        email,
+        age
       });
-    });
+
+      res.json(result.ops[0]);
+
+      // Close the database connection after the response is sent
+      await client.close();
+    } catch (err) {
+      console.error('Error creating user', err);
+      res.status(500).send('Internal server error');
+    }
   });
 
 module.exports = bhajanRouter;

@@ -3,6 +3,7 @@ var childrenusersResponseRouter = express.Router();
 var mongodb = require("mongodb").MongoClient;
 var objectId = require("mongodb").ObjectID;
 var bodyParser = require("body-parser");
+require('dotenv').config();
 var uuidv5 = require("uuid").v5;
 var {
   mongoDbUrl,

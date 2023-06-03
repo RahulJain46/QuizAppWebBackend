@@ -1,8 +1,8 @@
 var express = require("express");
 var kbcuserRouter = express.Router();
 var mongodb = require("mongodb").MongoClient;
-var objectId = require("mongodb").ObjectID;
-var bodyParser = require("body-parser");
+require('dotenv').config();
+const { ObjectId } = require('mongodb');
 var uuidv5 = require("uuid").v5;
 var { mongoDbUrl, kbcUsersCollection, databaseName } = require("../config");
 
@@ -11,17 +11,17 @@ const uri = `mongodb://localhost:27017/`;
 const dbName = "jindarshan";
 const fullName = uri + dbName;
 
-const connectionString = process.env.MONGODBURL + process.env.DATABASENAME;
+const connectionString = process.env.MONGODBURL;
 
 kbcuserRouter
   .route("/")
-  .get(function(req, res, next) {
-    mongodb.connect(connectionString, function(err, db) {
-      if (err) {
-        console.log(err);
-        return;
-      }
-      var collection = db.collection(kbcUsersCollection);
+  .get(async function(req, res, next) {
+    const client = await mongodb.connect(connectionString, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    });
+    console.log('Connected to MongoDB');
+    const collection = client.db('jindarshan').collection(kbcUsersCollection);
       var query = req.query;
       //user login and results in appeared quiz date for the specific users
       //endpoint- /users?login=true&userId=
@@ -31,23 +31,18 @@ kbcuserRouter
         query.login != undefined &&
         query.userId != undefined
       ) {
-        collection
-          .find({ userId: query.userId })
-          .count({}, function(err, usersResults) {
-            if (usersResults == 1) {
-              db.collection("usersresponse")
-                .find({ "usersAnswer.userId": query.userId }, { date: 1 })
-                .toArray(function(err, resultsDate) {
-                  res.json(resultsDate);
-                  db.close();
-                });
-            } else {
-              let obj = {};
-              obj["loginResponse"] = false;
-              res.json(obj);
-              db.close();
-            }
-          });
+        const usersResults = await collection.countDocuments({ userId: query.userId });
+
+        if (usersResults === 1) {
+          const resultsDate = await client.db('jindarshan').collection("usersresponse")
+            .find({ "usersAnswer.userId": query.userId }, { date: 1 })
+            .toArray();
+          res.json(resultsDate);
+        } else {
+          const obj = { loginResponse: false };
+          res.json(obj);
+        }
+        await client.close();
       }
       //to check if the user exist or not by count
       //query- /?userId=
@@ -55,40 +50,48 @@ kbcuserRouter
         !(Object.keys(query).length === 0 && query.constructor === Object) &&
         query.userId != undefined
       ) {
-        collection
-          .find({ userId: query.userId })
-          .count({}, function(err, results) {
-            console.log(results);
-            let resp = results;
-            res.json(resp);
-            db.close();
-          });
+
+        const results = await collection.countDocuments({ userId: query.userId });
+        console.log(results);
+        let resp = results;
+        res.json(resp);
+        await client.close();
+        
       }
       //get all the users- general end point
       else if (
         !(Object.keys(query).length === 0 && query.constructor === Object) &&
         query
       ) {
-        collection.find(query).toArray(function(err, results) {
+        try {
+          const results = await collection.find(query).toArray();
           let resp = results;
           res.json(resp);
-          db.close();
-        });
+        } catch (err) {
+          console.error(err);
+          res.status(500).json({ error: true, message: err.message });
+        }
+        finally {
+          if(client){
+              await client.close()
+          }
+        }
       } else {
-        collection.find({}).toArray(function(err, results) {
-          let resp = results;
-          res.json(resp);
-          db.close();
-        });
+
+        const results = await collection.find({}).toArray();
+        console.log(results);
+        let resp = results;
+        res.json(resp);
+        await client.close();
       }
-    });
   })
-  .post(function(req, res) {
-    mongodb.connect(connectionString, function(err, db) {
-      if (err) {
-        console.log(err);
-        return;
-      }
+  .post(async function(req, res) {
+
+    const client = await mongodb.connect(connectionString, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    });
+    console.log('Connected to MongoDB');
 
       var ip = req.header("x-forwarded-for") || req.connection.remoteAddress;
       var user = req.body;
@@ -101,15 +104,13 @@ kbcuserRouter
       );
       var date = ISTTime.toString().substring(4, 24);
 
-      var collection = db.collection(kbcUsersCollection);
+      const collection = client.db('jindarshan').collection(kbcUsersCollection);
       let id = uuidv5(user.fullname.toLowerCase() + user.mobile, uuidv5.DNS);
       Object.assign(user, { userId: id, ip, date });
-      collection.insert(user, function(err, results) {
-        console.log(results.insertedIds);
-        res.send("update is successful " + results.insertedIds);
-        db.close();
-      });
-    });
+      const results = await collection.insertOne(user);
+      console.log(results.insertedIds);
+      res.send("update is successful " + results.insertedIds);
+      await client.close()
   });
 
 module.exports = kbcuserRouter;

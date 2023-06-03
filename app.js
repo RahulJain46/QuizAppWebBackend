@@ -23,6 +23,8 @@ var examquestions = require("./routes/examquestions");
 var childrenusersResponse = require("./routes/childrenusersResponse");
 var childrenquestions = require("./routes/childrenquestions");
 var uploadImages = require("./routes/uploadImages");
+const dotenv = require('dotenv');
+
 
 var app = express();
 
@@ -62,6 +64,11 @@ app.use(function(req, res, next) {
   next(err);
 });
 
+app.use(function(req,res,next) {
+  dotenv.config();
+  next();
+})
+
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
@@ -71,6 +78,11 @@ app.use(function(err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.json("error");
+});
+
+app.use(function(err, req, res, next) {
+  console.error(err);
+  res.status(500).send("Internal Server Error");
 });
 
 module.exports = app;
