@@ -11,12 +11,14 @@ const uri = `mongodb://localhost:27017/`;
 const dbName = "jindarshan";
 const fullName = uri + dbName;
 
-const connectionString = process.env.MONGODBURL + process.env.DATABASENAME;
+// const connectionString = process.env.MONGODBURL + process.env.DATABASENAME;
+
+const connectionString = process.env.MONGODBURL;
 
 examuserRouter
   .route("/")
-  .get(function(req, res, next) {
-    mongodb.connect(connectionString, function(err, db) {
+  .get(function (req, res, next) {
+    mongodb.connect(connectionString, function (err, db) {
       if (err) {
         console.log(err);
         return;
@@ -33,11 +35,11 @@ examuserRouter
       ) {
         collection
           .find({ userId: query.userId })
-          .count({}, function(err, usersResults) {
+          .count({}, function (err, usersResults) {
             if (usersResults == 1) {
               db.collection("examusersresponse")
                 .find({ "usersAnswer.userId": query.userId }, { date: 1 })
-                .toArray(function(err, resultsDate) {
+                .toArray(function (err, resultsDate) {
                   res.json(resultsDate);
                   db.close();
                 });
@@ -57,7 +59,7 @@ examuserRouter
       ) {
         collection
           .find({ userId: query.userId })
-          .count({}, function(err, results) {
+          .count({}, function (err, results) {
             console.log(results);
             let resp = results;
             res.json(resp);
@@ -67,13 +69,13 @@ examuserRouter
         !(Object.keys(query).length === 0 && query.constructor === Object) &&
         query
       ) {
-        collection.find(query).toArray(function(err, results) {
+        collection.find(query).toArray(function (err, results) {
           let resp = results;
           res.json(resp);
           db.close();
         });
       } else {
-        collection.find({}).toArray(function(err, results) {
+        collection.find({}).toArray(function (err, results) {
           let resp = results;
           res.json(resp);
           db.close();
@@ -81,8 +83,8 @@ examuserRouter
       }
     });
   })
-  .post(function(req, res) {
-    mongodb.connect(connectionString, function(err, db) {
+  .post(function (req, res) {
+    mongodb.connect(connectionString, function (err, db) {
       if (err) {
         console.log(err);
         return;
@@ -102,7 +104,7 @@ examuserRouter
       var collection = db.collection(examusersCollections);
       let id = uuidv5(user.fullname.toLowerCase() + user.mobile, uuidv5.DNS);
       Object.assign(user, { userId: id, ip, date });
-      collection.insert(user, function(err, results) {
+      collection.insert(user, function (err, results) {
         console.log(results.insertedIds);
         res.send("update is successful " + results.insertedIds);
         db.close();

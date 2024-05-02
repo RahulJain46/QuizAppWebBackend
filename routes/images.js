@@ -9,7 +9,9 @@ var imagesRoute = express.Router();
 //ar upload = multer({ limits: { fileSize: 2000000 }, dest: "/uploads/" });
 var { mongoDbUrl, commentsCollections, databaseName } = require("../config");
 
-const connectionString = process.env.MONGODBURL + process.env.DATABASENAME;
+// const connectionString = process.env.MONGODBURL + process.env.DATABASENAME;
+
+const connectionString = process.env.MONGODBURL;
 
 // questionsRouter.route("/")
 //  .post('/uploadpicture', upload.single('picture'), function (req, res){
@@ -64,18 +66,18 @@ const connectionString = process.env.MONGODBURL + process.env.DATABASENAME;
 //   }
 // });
 
-imagesRoute.route("/:filename").get(function(req, res) {
+imagesRoute.route("/:filename").get(function (req, res) {
   // assign the URL parameter to a variable
   var filename = req.params.filename;
   // open the mongodb connection with the connection
   // string stored in the variable called url.
   var Id = new objectId(req.params.id);
-  mongoClient.connect(connectionString, function(err, db) {
+  mongoClient.connect(connectionString, function (err, db) {
     db.collection("images")
       // perform a mongodb search and return only one result.
       // convert the variabvle called filename into a valid
       // objectId.
-      .find({ _id: Id }, function(err, results) {
+      .find({ _id: Id }, function (err, results) {
         // set the http response header so the browser knows this
         // is an 'image/jpeg' or 'image/png'
         res.setHeader("content-type", "image/jpeg");

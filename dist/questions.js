@@ -9,9 +9,9 @@ var { mongoDbUrl, questionsCollection, databaseName } = require("../config");
 const uri = `mongodb://localhost:27017/`;
 const dbName = "jindarshan";
 const fullName = uri + dbName;
-const connectionString =
-  "mongodb://dbuser:password%40123@cluster0-shard-00-00-qqpkg.mongodb.net:27017,cluster0-shard-00-01-qqpkg.mongodb.net:27017,cluster0-shard-00-02-qqpkg.mongodb.net:27017/jindarshan?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true&w=majority";
-//const connectionString = process.env.MONGODBURL
+// const connectionString =
+//   "mongodb://dbuser:password%40123@cluster0-shard-00-00-qqpkg.mongodb.net:27017,cluster0-shard-00-01-qqpkg.mongodb.net:27017,cluster0-shard-00-02-qqpkg.mongodb.net:27017/jindarshan?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true&w=majority";
+const connectionString = process.env.MONGODBURL;
 console.log(connectionString, "connection string");
 questionsRouter
   .route("/")

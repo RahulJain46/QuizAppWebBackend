@@ -3,22 +3,24 @@ var childrenusersResponseRouter = express.Router();
 var mongodb = require("mongodb").MongoClient;
 var objectId = require("mongodb").ObjectID;
 var bodyParser = require("body-parser");
-require('dotenv').config();
+require("dotenv").config();
 var uuidv5 = require("uuid").v5;
 var {
   mongoDbUrl,
   childrenuserResponseCollection,
-  databaseName
+  databaseName,
 } = require("../config");
 
 const uri = `mongodb://localhost:27017/`;
 const dbName = "jindarshan";
-const connectionString = process.env.MONGODBURL + process.env.DATABASENAME;
+// const connectionString = process.env.MONGODBURL + process.env.DATABASENAME;
+
+const connectionString = process.env.MONGODBURL;
 /* GET users listing. */
 childrenusersResponseRouter
   .route("/")
-  .get(function(req, res, next) {
-    mongodb.connect(connectionString, function(err, db) {
+  .get(function (req, res, next) {
+    mongodb.connect(connectionString, function (err, db) {
       if (err) {
         console.log(err);
         return;
@@ -44,10 +46,10 @@ childrenusersResponseRouter
                       $expr: {
                         $and: [
                           { $eq: ["$date", query.date] },
-                          { $in: ["$$user_Id", "$usersAnswer.userId"] }
-                        ]
-                      }
-                    }
+                          { $in: ["$$user_Id", "$usersAnswer.userId"] },
+                        ],
+                      },
+                    },
                   },
 
                   {
@@ -57,22 +59,22 @@ childrenusersResponseRouter
                       "usersAnswer.time": 1,
                       "usersAnswer.feedback": 1,
                       "usersAnswer.suggestion": 1,
-                      date: 1
-                    }
-                  }
+                      date: 1,
+                    },
+                  },
                 ],
-                as: "userInfo"
-              }
-            }
+                as: "userInfo",
+              },
+            },
           ])
-          .toArray(function(err, results) {
+          .toArray(function (err, results) {
             if (err) throw err;
             let ObjArray = [];
-            results.map(result => {
+            results.map((result) => {
               let id = result.userId;
               let obj = {};
               if (result.userInfo.length != 0) {
-                result.userInfo[0].usersAnswer.map(useranswer => {
+                result.userInfo[0].usersAnswer.map((useranswer) => {
                   if (useranswer.userId === id) {
                     obj["time"] = useranswer.time;
                     obj["score"] = useranswer.score;
@@ -100,8 +102,8 @@ childrenusersResponseRouter
           .aggregate([
             {
               $match: {
-                date: query.date
-              }
+                date: query.date,
+              },
             },
             {
               $project: {
@@ -110,14 +112,14 @@ childrenusersResponseRouter
                     input: "$usersAnswer",
                     as: "useranswer",
                     cond: {
-                      $eq: ["$$useranswer.userId", query.userId]
-                    }
-                  }
-                }
-              }
-            }
+                      $eq: ["$$useranswer.userId", query.userId],
+                    },
+                  },
+                },
+              },
+            },
           ])
-          .toArray(function(err, results) {
+          .toArray(function (err, results) {
             if (err) throw err;
             if (results[0].usersResponse.length) {
               res.json(results);
@@ -136,7 +138,7 @@ childrenusersResponseRouter
       ) {
         collection
           .find({ date: query.date, "usersAnswer.userId": query.userId })
-          .count({}, function(err, results) {
+          .count({}, function (err, results) {
             let resp = results;
             res.json(resp);
             db.close();
@@ -145,13 +147,13 @@ childrenusersResponseRouter
         !(Object.keys(query).length === 0 && query.constructor === Object) &&
         query
       ) {
-        collection.find(query).toArray(function(err, results) {
+        collection.find(query).toArray(function (err, results) {
           let resp = results;
           res.json(resp);
           db.close();
         });
       } else {
-        collection.find({}).toArray(function(err, results) {
+        collection.find({}).toArray(function (err, results) {
           let resp = results;
           res.json(resp);
           db.close();
@@ -159,29 +161,29 @@ childrenusersResponseRouter
       }
     });
   })
-  .post(function(req, res) {
-    mongodb.connect(connectionString, function(err, db) {
+  .post(function (req, res) {
+    mongodb.connect(connectionString, function (err, db) {
       if (err) {
         console.log(err);
         return;
       }
       var usersResponse = req.body;
-      usersResponse.usersAnswer.map(userAnswer => {
-        userAnswer.answers.map(answer => {
+      usersResponse.usersAnswer.map((userAnswer) => {
+        userAnswer.answers.map((answer) => {
           let id = uuidv5(answer.question, uuidv5.DNS);
           Object.assign(answer, { _id: id });
         });
       });
       var collection = db.collection(childrenuserResponseCollection);
-      collection.insert(usersResponse, function(err, results) {
+      collection.insert(usersResponse, function (err, results) {
         console.log(results.insertedIds);
         res.send("update is successful " + results.insertedIds);
         db.close();
       });
     });
   })
-  .patch(function(req, res) {
-    mongodb.connect(connectionString, function(err, db) {
+  .patch(function (req, res) {
+    mongodb.connect(connectionString, function (err, db) {
       if (err) {
         console.log(err);
         return;
@@ -201,7 +203,7 @@ childrenusersResponseRouter
         collection.update(
           { date: query.date },
           { $push: { usersAnswer: usersResponse } },
-          function(err, results) {
+          function (err, results) {
             console.log(results);
             res.send("update is successful " + results.result.ok);
             db.close();
@@ -213,15 +215,15 @@ childrenusersResponseRouter
 
 childrenusersResponseRouter
   .route("/:id")
-  .get(function(req, res) {
+  .get(function (req, res) {
     var Id = new objectId(req.params.id);
-    mongodb.connect(connectionString, function(err, db) {
+    mongodb.connect(connectionString, function (err, db) {
       if (err) {
         console.log(err);
         return;
       }
       var collection = db.collection(childrenuserResponseCollection);
-      collection.findOne({ _id: Id }, function(err, results) {
+      collection.findOne({ _id: Id }, function (err, results) {
         res.json(results);
         db.close();
       });
@@ -229,16 +231,16 @@ childrenusersResponseRouter
   })
 
   //delete method
-  .delete(function(req, res) {
+  .delete(function (req, res) {
     var Id = new objectId(req.params.id);
-    mongodb.connect(connectionString, function(err, db) {
+    mongodb.connect(connectionString, function (err, db) {
       if (err) {
         console.log(err);
         return;
       }
       var collection = db.collection(childrenuserResponseCollection);
 
-      collection.deleteOne({ _id: Id }, function(err, results) {
+      collection.deleteOne({ _id: Id }, function (err, results) {
         res.send("removed");
         db.close();
       });
