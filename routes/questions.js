@@ -38,10 +38,238 @@ questionsRouter
       query.date != undefined &&
       query.date[1] === "all"
     ) {
-      const results = await collection.find({}, { date: 1 }).toArray();
-      console.log(results);
-      let resp = results;
-      res.json(resp);
+      let results = [];
+      if (query.date[2] === "allDates") {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        results = await collection
+          .aggregate([
+            // Match documents where the questions array is not empty
+            {
+              $match: {
+                questions: { $exists: true, $not: { $size: 0 } },
+              },
+            },
+            // Project only the date field and parse the date string if it matches the expected format
+            {
+              $addFields: {
+                parsedDate: {
+                  $cond: {
+                    if: {
+                      $and: [
+                        {
+                          $regexMatch: {
+                            input: "$date",
+                            regex: /^\d{2}-\d{2}-\d{4}$/,
+                          },
+                        }, // Check format
+                        {
+                          $let: {
+                            vars: {
+                              day: { $toInt: { $substrCP: ["$date", 0, 2] } },
+                              month: { $toInt: { $substrCP: ["$date", 3, 2] } },
+                              year: { $toInt: { $substrCP: ["$date", 6, 4] } },
+                            },
+                            in: {
+                              $and: [
+                                { $gte: ["$$day", 1] }, // Day should be greater than or equal to 1
+                                {
+                                  $cond: {
+                                    if: { $eq: ["$$month", 2] }, // If month is February
+                                    then: {
+                                      $lte: [
+                                        "$$day",
+                                        {
+                                          $cond: {
+                                            if: {
+                                              $eq: [{ $mod: ["$$year", 4] }, 0],
+                                            },
+                                            then: 29,
+                                            else: 28,
+                                          },
+                                        },
+                                      ], // Check for leap year
+                                    },
+                                    else: {
+                                      $lte: [
+                                        "$$day",
+                                        {
+                                          $switch: {
+                                            branches: [
+                                              {
+                                                case: {
+                                                  $in: [
+                                                    "$$month",
+                                                    [1, 3, 5, 7, 8, 10, 12],
+                                                  ],
+                                                },
+                                                then: 31,
+                                              }, // Months with 31 days
+                                              {
+                                                case: {
+                                                  $in: [
+                                                    "$$month",
+                                                    [4, 6, 9, 11],
+                                                  ],
+                                                },
+                                                then: 30,
+                                              }, // Months with 30 days
+                                            ],
+                                            default: 0,
+                                          },
+                                        },
+                                      ], // Default case
+                                    },
+                                  },
+                                },
+                              ],
+                            },
+                          },
+                        },
+                      ],
+                    },
+                    then: {
+                      $dateFromString: {
+                        dateString: "$date",
+                        format: "%d-%m-%Y", // Specify the date format
+                      },
+                    },
+                    else: null, // If the date format doesn't match or the date is invalid, set parsedDate to null
+                  },
+                },
+              },
+            },
+            // Match documents where the parsed date exists and is not null
+            {
+              $match: {
+                parsedDate: { $exists: true, $ne: null },
+              },
+            },
+            // Match dates that are not more than today
+            {
+              $match: {
+                parsedDate: {
+                  $lte: today, // Compare with today's date
+                },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                date: 1,
+              },
+            },
+          ])
+          .toArray();
+      } else {
+        results = await collection.find({}, { date: 1 }).toArray();
+        console.log(results);
+      }
+
+      //
+
+      // const kbcusersresponseCollection = client
+      //   .db("jindarshan")
+      //   .collection("kbcusersresponse");
+      // const usersresponseCollection = client
+      //   .db("jindarshan")
+      //   .collection("usersresponse");
+
+      // const startDate = new Date();
+      // const endDate = new Date(startDate);
+      // endDate.setFullYear(endDate.getFullYear() + 1);
+
+      // const incrementDate = (date) => {
+      //   const newDate = new Date(date);
+      //   newDate.setDate(newDate.getDate() + 1);
+      //   return newDate;
+      // };
+      // let currentDate = startDate;
+      // let userReponses = [];
+      // let kbcuserResponses = [];
+
+      // for (const result of results) {
+      //   if (
+      //     Object.keys(result).length > 0 &&
+      //     result?.date !== undefined &&
+      //     result?.date.length > 0 &&
+      //     result?.questions !== undefined &&
+      //     result?.questions?.length > 0
+      //   ) {
+      //     if (result?.date === "03-05-2024") {
+      //       break; // Break out of the loop if the date is "03-05-2024"
+      //     }
+      //     const newDateString = `${currentDate
+      //       .getDate()
+      //       .toString()
+      //       .padStart(2, "0")}-${(currentDate.getMonth() + 1)
+      //       .toString()
+      //       .padStart(2, "0")}-${currentDate.getFullYear()}`;
+
+      //     currentDate = incrementDate(currentDate);
+      //     let userResponse = {
+      //       date: newDateString,
+      //       usersAnswer: [],
+      //     };
+      //     let kbcUserResponse = {
+      //       date: newDateString,
+      //       usersAnswer: [],
+      //     };
+      //     userReponses.push(userResponse);
+      //     kbcuserResponses.push(kbcUserResponse);
+      //   }
+      // }
+
+      // results.forEach((result) => {
+      //   if (
+      //     Object.keys(result).length > 0 &&
+      //     result?.date !== undefined &&
+      //     result?.date.length > 0 &&
+      //     result?.questions !== undefined &&
+      //     result?.questions?.length > 0
+      //   ) {
+      //     if (result?.date === "03-05-2024") {
+      //       return;
+      //     }
+      //     const newDateString = `${currentDate
+      //       .getDate()
+      //       .toString()
+      //       .padStart(2, "0")}-${(currentDate.getMonth() + 1)
+      //       .toString()
+      //       .padStart(2, "0")}-${currentDate.getFullYear()}`;
+
+      //     currentDate = incrementDate(currentDate);
+      //     let userResponse = {
+      //       date: newDateString,
+      //       usersAnswer: [],
+      //     };
+      //     let kbcUserResponse = {
+      //       date: newDateString,
+      //       usersAnswer: [],
+      //     };
+      //     userReponses.push(userResponse);
+      //     kbcuserResponses.push(kbcUserResponse);
+      //     // const newRecord = {
+      //     //   ...result,
+      //     //   date: newDateString,
+      //     // };
+      //     //delete newRecord._id;
+      //     //return newRecord;
+      //   }
+      // });
+      // res.json(kbcuserResponses);
+      // await kbcusersresponseCollection.insertMany(kbcuserResponses);
+      // const userResponseResult = await usersresponseCollection.insertMany(
+      //   userReponses
+      // );
+      // console.log(userResponseResult.insertedId.toHexString());
+      // res.send(
+      //   "update is successful " + userResponseResult.insertedId.toHexString()
+      // );
+      // let resp = newRecords;
+      // await collection.insertMany(newRecords);
+      //  res.json(results);
+      res.json(results);
       await client.close();
     } else if (pageNo && size) {
       collection.count({}, function (err, totalCount) {
