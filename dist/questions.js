@@ -336,6 +336,70 @@ questionsRouter
       "update is successful " + userResponseResult.insertedId.toHexString()
     );
     await client.close();
+  })
+  .patch(async function (req, res) {
+    let client;
+    try {
+      const date = req.query && req.query.date;
+      if (!date) {
+        res.status(400).json({ error: true, message: "date is required" });
+        return;
+      }
+      client = await mongodb.connect(connectionString, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      });
+      const collection = client.db("jindarshan").collection(questionsCollection);
+      const day = await collection.findOne({ date: date });
+      if (!day || !Array.isArray(day.questions)) {
+        res.status(404).json({ error: true, message: "quiz not found" });
+        return;
+      }
+      const body = req.body || {};
+      const questionId = body.questionId || req.query.questionId;
+      const indexFromQuery = body.index !== undefined ? Number(body.index) : Number(req.query.index);
+      let index = -1;
+      if (questionId) {
+        index = day.questions.findIndex((item) => String(item._id) === String(questionId));
+      }
+      if (index < 0 && Number.isInteger(indexFromQuery)) {
+        index = indexFromQuery;
+      }
+      if (index < 0 || index >= day.questions.length) {
+        res.status(404).json({ error: true, message: "question not found" });
+        return;
+      }
+      const current = day.questions[index] || {};
+      const next = Object.assign({}, current);
+      const fields = [
+        "question",
+        "answer",
+        "remarks",
+        "hint",
+        "Book",
+        "book",
+        "page_no",
+        "level",
+        "topic",
+        "subtopic",
+      ];
+      fields.forEach((field) => {
+        if (body[field] !== undefined) next[field] = body[field];
+      });
+      if (next.Book && !next.book) next.book = next.Book;
+      if (!next._id) next._id = uuidv5(next.question || current.question || String(index), uuidv5.DNS);
+      day.questions[index] = next;
+      await collection.updateOne(
+        { _id: day._id },
+        { $set: { questions: day.questions } }
+      );
+      res.json({ error: false, message: "updated", question: next, index: index });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: true, message: err.message });
+    } finally {
+      if (client) await client.close();
+    }
   });
 
 questionsRouter
@@ -357,7 +421,7 @@ questionsRouter
   })
   //put method to edit
   .put(async function (req, res) {
-    var Id = new ObjectI(req.params.id);
+    var Id = new ObjectId(req.params.id);
     const client = await mongodb.connect(connectionString, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
